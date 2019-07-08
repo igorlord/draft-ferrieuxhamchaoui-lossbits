@@ -26,19 +26,16 @@ pi:
 author:
   -
     ins: A. Ferrieux
-    role: editor
     name: Alexandre Ferrieux
     org: Orange Labs
     email: alexandre.ferrieux@orange.com
   -
     ins: I. Hamchaoui
-    role: editor
     name: Isabelle Hamchaoui
     org: Orange Labs
     email: isabelle.hamchaoui@orange.com
   -
     ins: I. Lubashev
-    role: editor
     name: Igor Lubashev
     org: Akamai Technologies
     street: 150 Broadway
@@ -70,33 +67,33 @@ transport header and do not allow an alternative method for loss detection.
 
 # Introduction
 
-Packet loss is a hard and pervasive problem of day-to-day network operation, and
+Packet loss is a pervasive problem of day-to-day network operation, and
 proactively detecting, measuring, and locating it is crucial to maintaining high
 QoS and timely resolution of crippling end-to-end throughput issues. To this
 effect, in a TCP-dominated world, network operators have been heavily relying on
 information present in the clear in TCP headers: sequence and acknowledgment
 numbers, and SACK when enabled. These allow for quantitative estimation of
-packet loss by passive on-path observation. Additionally, the lossy segment
-(upstream or downstream from the observation point) can be quickly identified by
-moving the passive observer around.
+packet loss by passive on-path observation, and the lossy segment (upstream or
+downstream from the observation point) can be quickly identified by moving the
+passive observer around.
 
 With encrypted protocols, the equivalent transport headers are encrypted and
 passive packet loss observation is not possible, as described in
 {{TRANSPORT-ENCRYPT}}.
 
-Encrypted protocols could be routed by the network differently and the fraction
-of Internet traffic delivered using encrypted protocols is increasing every
-year. Therefore, is it imperative to measure packet loss experienced by
-encrypted protocol users directly instead of relying on measuring TCP loss
-between similar endpoints.
+Since encrypted protocols could be routed by the network differently, and the
+fraction of Internet traffic delivered using encrypted protocols is increasing
+every year, it is imperative to measure packet loss experienced by encrypted
+protocol users directly instead of relying on measuring TCP loss between similar
+endpoints.
 
-Since explicit path signals are preferred by {{!RFC8558}}, this document
-proposes adding two explicit loss bits to the clear portion of the protocol
-headers to restore network operators' ability to maintain high QoS for users of
-encrypted protocols. These bits can be added to an unencrypted portion of a
-header belonging to any protocol layer, e.g. two most significant its of the TTL
-field in IP (see {{IP}}) and IPv6 (see {{IPv6}}) headers or reserved bits in a
-QUIC v1 header (see {{QUIC-TRANSPORT}}).
+Following the recommendation in {{!RFC8558}} of making path signals explicit,
+this document proposes adding two explicit loss bits to the clear portion of the
+protocol headers to restore network operators' ability to maintain high QoS for
+users of encrypted protocols. These bits can be added to an unencrypted portion
+of a header belonging to any protocol layer, e.g. two most significant its of
+the TTL field in IP (see {{IP}}) and IPv6 (see {{IPv6}}) headers or reserved
+bits in a QUIC v1 header (see {{QUIC-TRANSPORT}}).
 
 # Notational Conventions    {#conventions}
 
