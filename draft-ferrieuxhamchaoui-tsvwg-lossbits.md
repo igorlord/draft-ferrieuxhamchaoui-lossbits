@@ -194,9 +194,9 @@ packets with L=1 that they have a greater chance of arriving at the observer.
 Blocks of N (half of Q Period) consecutive packets are sent with the same value
 of the Q bit, followed by another block of N packets with inverted value of the
 Q bit. Hence, knowing the value of N, an on-path observer can estimate the
-amount of loss after observing at least N packets. The upstream loss rate is an
-average number of packets in a block of packets with the same Q value divided by
-N.
+amount of upstream loss after observing at least N packets. If `p` is the
+average number of packets in a block of packets with the same Q value, then the
+upstream loss is `1-p/N`.
 
 The observer needs to be able to tolerate packet reordering that can blur the
 edges of the square signal.
@@ -298,9 +298,10 @@ ensure that loss information does not compromise protocol's privacy goals.
 For example, {{QUIC-TRANSPORT}} allows changing Connection IDs in the middle of
 a connection to reduce the likelihood of a passive observer linking old and new
 subflows to the same device. A QUIC implementation would need to reset all
-counters when it changes Connection ID used for outgoing packets. It would also
-need to avoid incrementing Unreported Loss counter for loss of packets sent with
-a different Connection ID.
+counters when it changes the destination (IP address or UDP port) or the
+Connection ID used for outgoing packets. It would also need to avoid
+incrementing Unreported Loss counter for loss of packets sent to a different
+destinatoin or with a different Connection ID.
 
 
 # IANA Considerations
