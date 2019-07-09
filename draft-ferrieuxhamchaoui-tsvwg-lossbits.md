@@ -203,8 +203,8 @@ edges of the square signal.
 
 The Q Period needs to be chosen carefully, since the observation could become
 too unreliable in case of packet reordering and loss if Q Period is too
-small. However, when Q Period is too large, short connections may not yield a
-useful upstream loss measurement.
+small. However, when Q Period is too large, connections that send fewer than
+half Q Period packets do not yield a useful upstream loss measurement.
 
 The observer needs to differentiate packets as belonging to different
 connections, since they use independent counters.
