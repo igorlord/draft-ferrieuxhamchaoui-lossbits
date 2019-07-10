@@ -53,6 +53,8 @@ informative:
   QUIC-TRANSPORT: I-D.ietf-quic-transport
   TRANSPORT-ENCRYPT: I-D.ietf-tsvwg-transport-encrypt
   GREASE: I-D.ietf-tls-grease
+  UDP-OPTIONS: I-D.ietf-tsvwg-udp-options
+  UDP-SURPLUS: I-D.herbert-udp-space-hdr
 
 --- abstract
 
@@ -91,9 +93,9 @@ Following the recommendation in {{!RFC8558}} of making path signals explicit,
 this document proposes adding two explicit loss bits to the clear portion of the
 protocol headers to restore network operators' ability to maintain high QoS for
 users of encrypted protocols. These bits can be added to an unencrypted portion
-of a header belonging to any protocol layer, e.g. two most significant its of
-the TTL field in IP (see {{IP}}) and IPv6 (see {{IPv6}}) headers or reserved
-bits in a QUIC v1 header (see {{QUIC-TRANSPORT}}).
+of a header belonging to any protocol layer, e.g. IP (see {{IP}}) and IPv6 (see
+{{IPv6}}) headers or extensions, UDP surplus space (see {{UDP-OPTIONS}} and
+{{UDP-SURPLUS}}), reserved bits in a QUIC v1 header (see {{QUIC-TRANSPORT}}).
 
 # Notational Conventions    {#conventions}
 
@@ -125,7 +127,8 @@ each connection (each subflow for multipath connections).
 
 The sQuare Value is initialized to the Initial Q Value (0 or 1) and is reflected
 in the Q bit of every outgoing packet. The sQuare value is inverted after
-sending every N packets (Q Period is 2*N).
+sending every N packets (Q Period is 2*N). The Q bit represents "packet color"
+as defined by {{?RFC8321}}.
 
 The choice of the Initial Q Value and Q Period is determined by the protocol
 containing Q and L bits. For example, the values can be protocol constants (e.g
@@ -308,7 +311,15 @@ destinatoin or with a different Connection ID.
 
 This document makes no request of IANA.
 
+
+# Change Log
+
+## Since version 00
+
+- Addressed review comments
+- Improved guidelines for privacy protections for  QIUC
+
 # Acknowledgments
 
-The sQuare Bit was originally specified by Kazuho Oku in early proposals for
+The sQuare bit was originally suggested by Kazuho Oku in early proposals for
 loss measurement.
