@@ -74,10 +74,10 @@ proactively detecting, measuring, and locating it is crucial to maintaining high
 QoS and timely resolution of crippling end-to-end throughput issues. To this
 effect, in a TCP-dominated world, network operators have been heavily relying on
 information present in the clear in TCP headers: sequence and acknowledgment
-numbers, and SACK when enabled. These allow for quantitative estimation of
-packet loss by passive on-path observation, and the lossy segment (upstream or
-downstream from the observation point) can be quickly identified by moving the
-passive observer around.
+numbers and SACKs when enabled (see {{?RFC8517}}). These allow for quantitative
+estimation of packet loss by passive on-path observation, and the lossy segment
+(upstream or downstream from the observation point) can be quickly identified by
+moving the passive observer around.
 
 With encrypted protocols, the equivalent transport headers are encrypted and
 passive packet loss observation is not possible, as described in
