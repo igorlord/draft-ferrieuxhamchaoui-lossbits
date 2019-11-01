@@ -131,28 +131,41 @@ sending every N packets (Q Period is 2*N). The Q bit represents "packet color"
 as defined by {{?RFC8321}}.
 
 The choice of the Initial Q Value and Q Period is determined by the protocol
-containing Q and L bits. For example, the values can be protocol constants (e.g
+containing Q and L bits. For example, the values can be protocol constants (e.g.
 "Initial Q Value" is 0, and "Q Period" is 128), or they can be set explicitly
 for each connection (e.g. "Initial Q Value" is whatever value the initial packet
-has, and "Q Period" is set per a dedicated TCP option on SYN and SYN/ACK).
+has, and "Q Period" is set per a dedicated TCP option on SYN and SYN/ACK), or
+they can be included with every packet (e.g. ConEx IPv6 Destination Option of
+{{?RFC7837}}).
 
 Observation points can estimate the upstream losses by counting the number of
 packets during a half period of the square signal, as described in {{usage}}.
 
+### Q Period Selection
+
+A protocol containing Q and L bits can allow the sender to choose Q Period based
+on the expected amount of loss and reordering on the path (see
+{{upstreamloss}}). If the explicit value of the Q Period is not explicitly
+signaled by the protocol, the Q Period value MUST be at least 128 and be a power
+of 2. This requirement allows an Observer to infer the Q Period by obsering one
+period of the square signal. It also allows the Observer to identify flows that
+set the loss bits to arbitrary values (see {{ossification}}).
 
 ## Setting the Loss Event Bit on Outgoing Packets {#lossbit}
 
 The Unreported Loss counter is initialized to 0, and L bit of every outgoing
 packet indicates whether the Unreported Loss counter is positive (L=1 if the
-counter is positive, and L=0 otherwise).
-
-The value of the Unreported Loss counter is decremented every time a packet with
-L=1 is sent.
+counter is positive, and L=0 otherwise).  The value of the Unreported Loss
+counter is decremented every time a packet with L=1 is sent.
 
 The value of the Unreported Loss counter is incremented for every packet that
 the protocol declares lost, using whatever loss detection machinery the protocol
 employs. If the protocol is able to rescind the loss determination later, the
 Unreported Loss counter SHOULD NOT be decremented due to the rescission.
+
+This loss signaling is similar to loss signaling in {{?RFC7713}}, except the
+Loss Event bit is reporting the exact number of lost packets, whereas
+{{?RFC7713}}'s Echo Loss bit is reporting an approximate number of lost bytes.
 
 Observation points can estimate the end-to-end loss, as determined by the
 upstream endpoint's loss detection machinery, by counting packets in this
@@ -267,7 +280,7 @@ whose magnitude is between the amount of such adjustment and the entirety of the
 upstream loss measured in {{upstreamloss}}.
 
 
-# Ossification Considerations
+# Ossification Considerations  {#ossification}
 
 Accurate loss information is not critical to the operation of any protocol,
 though its presence for a sufficient number of connections is important for the
