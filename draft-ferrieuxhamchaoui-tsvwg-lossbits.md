@@ -48,6 +48,7 @@ author:
 normative:
   IP: RFC0791
   IPv6: RFC8200
+  ECN: RFC3168
 
 informative:
   QUIC-TRANSPORT: I-D.ietf-quic-transport
@@ -280,7 +281,45 @@ whose magnitude is between the amount of such adjustment and the entirety of the
 upstream loss measured in {{upstreamloss}}.
 
 
-# Ossification Considerations  {#ossification}
+# ECN-Echo Event Bit   {#ecn-echo}
+
+While the primary focus of the draft is on exposing packet loss, modern network
+can report congestion events before they have to drop packets due to congestion,
+as described in {{ECN}}. When transport protocols communicate ECN-Echo feedback
+under encryption, this signal cannot be observed by the network operators. When
+tasked with diagnosing a network performance problem, knowledge of a congestion
+downstream of an observation point can be intrumental.
+
+If downstream congestion information is desired, this information can be
+signaled with an additinal bit.
+
+* E: The "ECN-Echo Event" bit is set to 0 or 1 according to the Unreported ECN
+  Echo counter, as explained below in {{ecnbit}}.
+
+## Setting the ECN-Echo Event Bit on Outgoing Packets {#ecnbit}
+
+The Unreported ECN-Echo counter operates identicaly to Unreported Loss counter
+({{lossbit}}), except it counts packets delivered by the network with CE
+markings, according to the ECN-Echo feedback from the receiver.
+
+This ECN-Echo signaling is similar to ECN signaling in {{?RFC7713}}.
+
+# Using E Bit for Passive ECN-Reported Congestion Measurement {#ech-usage}
+
+A network observer can count packets with CE codepoint and determine the
+upstream CE-marking rate directly.
+
+Observation points can also estimate ECN-reported end-to-end congestion by
+counting packets in this direction with a E bit equal to 1.
+
+The upstream CE-marking rate and end-to-end ECN-reported congestion can provide
+information about downstream CE-marking rate. Presence of E bits along with L
+bits, however, can somewhat confound precise estimates of upstream and
+downstream CE-markings in case the flow contains packets that are not
+ECN-capable.
+
+
+# Protocol Ossification Considerations  {#ossification}
 
 Accurate loss information is not critical to the operation of any protocol,
 though its presence for a sufficient number of connections is important for the
