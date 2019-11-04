@@ -48,7 +48,11 @@ author:
 normative:
   IP: RFC0791
   IPv6: RFC8200
+  TCP: RFC0793
   ECN: RFC3168
+  ConEx: RFC7713
+  ConEx-IPv6: RFC7837
+  ConEx-TCP: RFC7786
 
 informative:
   QUIC-TRANSPORT: I-D.ietf-quic-transport
@@ -56,6 +60,7 @@ informative:
   GREASE: I-D.ietf-tls-grease
   UDP-OPTIONS: I-D.ietf-tsvwg-udp-options
   UDP-SURPLUS: I-D.herbert-udp-space-hdr
+  ACCURATE: I-D.ietf-tcpm-accurate-ecn
 
 --- abstract
 
@@ -137,7 +142,7 @@ containing Q and L bits. For example, the values can be protocol constants (e.g.
 for each connection (e.g. "Initial Q Value" is whatever value the initial packet
 has, and "Q Period" is set per a dedicated TCP option on SYN and SYN/ACK), or
 they can be included with every packet (e.g. ConEx IPv6 Destination Option of
-{{?RFC7837}}).
+{{ConEx-IPv6}}).
 
 Observation points can estimate the upstream losses by counting the number of
 packets during a half period of the square signal, as described in {{usage}}.
@@ -164,9 +169,15 @@ the protocol declares lost, using whatever loss detection machinery the protocol
 employs. If the protocol is able to rescind the loss determination later, the
 Unreported Loss counter SHOULD NOT be decremented due to the rescission.
 
-This loss signaling is similar to loss signaling in {{?RFC7713}}, except the
-Loss Event bit is reporting the exact number of lost packets, whereas
-{{?RFC7713}}'s Echo Loss bit is reporting an approximate number of lost bytes.
+This loss signaling is similar to loss signaling in {{ConEx}}, except the Loss
+Event bit is reporting the exact number of lost packets, whereas Echo Loss bit
+in {{ConEx}} is reporting an approximate number of lost bytes.
+
+For protocols, such as TCP ({{TCP}}), that allow network devices to change data
+segmentation, it is possible that only a part of the packet is lost. In these
+cases, the sender MUST increment Unreported Loss counter by the fraction of the
+packet data lost (so Unreported Loss counter may become negative when a packet
+with L=1 is sent after a partial packet has been lost).
 
 Observation points can estimate the end-to-end loss, as determined by the
 upstream endpoint's loss detection machinery, by counting packets in this
@@ -283,12 +294,12 @@ upstream loss measured in {{upstreamloss}}.
 
 # ECN-Echo Event Bit   {#ecn-echo}
 
-While the primary focus of the draft is on exposing packet loss, modern network
-can report congestion events before they have to drop packets due to congestion,
-as described in {{ECN}}. When transport protocols communicate ECN-Echo feedback
-under encryption, this signal cannot be observed by the network operators. When
-tasked with diagnosing a network performance problem, knowledge of a congestion
-downstream of an observation point can be intrumental.
+While the primary focus of the draft is on exposing packet loss, modern networks
+can report congestion before they are forced to drop packets, as described in
+{{ECN}}. When transport protocols keep ECN-Echo feedback under encryption, this
+signal cannot be observed by the network operators. When tasked with diagnosing
+network performance problems, knowledge of a congestion downstream of an
+observation point can be intrumental.
 
 If downstream congestion information is desired, this information can be
 signaled with an additinal bit.
@@ -302,9 +313,13 @@ The Unreported ECN-Echo counter operates identicaly to Unreported Loss counter
 ({{lossbit}}), except it counts packets delivered by the network with CE
 markings, according to the ECN-Echo feedback from the receiver.
 
-This ECN-Echo signaling is similar to ECN signaling in {{?RFC7713}}.
+This ECN-Echo signaling is similar to ECN signaling in {{ConEx}}. ECN-Echo
+mechanism in QUIC provides the number of packets received with CE marks. For
+protocols like TCP, the method described in {{ConEx-TCP}} can be employed. As
+stated in {{ConEx-TCP}}, such feedback can be further improved using a method
+described in {{ACCURATE}}.
 
-# Using E Bit for Passive ECN-Reported Congestion Measurement {#ech-usage}
+## Using E Bit for Passive ECN-Reported Congestion Measurement {#ech-usage}
 
 A network observer can count packets with CE codepoint and determine the
 upstream CE-marking rate directly.
@@ -366,12 +381,20 @@ This document makes no request of IANA.
 
 # Change Log
 
+## Since version 01
+- Clarified Q Period selection
+- Added an optional E (ECN-Echo Event) bit
+- Clarified L bit calculation for protocols that allow partial data loss due to
+  a change in segmentation (such as TCP)
+
 ## Since version 00
 
 - Addressed review comments
-- Improved guidelines for privacy protections for  QIUC
+- Improved guidelines for privacy protections for QIUC
+
 
 # Acknowledgments
 
 The sQuare bit was originally suggested by Kazuho Oku in early proposals for
-loss measurement.
+loss measurement and is an instance of the "alternate marking" as defined in
+{{!RFC8321}}.
