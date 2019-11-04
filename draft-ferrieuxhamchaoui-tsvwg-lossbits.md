@@ -360,7 +360,7 @@ concerns.
 # Privacy Considerations
 
 Guarding user's privacy is an important goal for modern protocols and protocol
-extensions per {{?RFC7285}}.  While an explicit loss signal -- a preferred way to
+extensions per {{?RFC7258}}.  While an explicit loss signal -- a preferred way to
 share loss information per {{!RFC8558}} -- helps to minimize unintentional
 exposure of additional information, implementations of loss reporting must
 ensure that loss information does not compromise protocol's privacy goals.
