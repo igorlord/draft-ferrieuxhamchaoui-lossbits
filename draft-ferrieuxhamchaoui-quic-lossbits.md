@@ -126,21 +126,37 @@ discussed below.
 Observation points can estimate the upstream losses by counting the number of
 packets during a half period of the square signal, as described in {{usage}}.
 
+### Q Period Selection
+
+The sender is expected to choose Q Period based on the expected amount of loss
+and reordering on the path (see {{upstreamloss}}). The Q Period value MUST be at
+least 128 and be a power of 2. This requirement allows an Observer to infer the
+Q Period by obsering one period of the square signal. It also allows the
+Observer to identify flows that set the loss bits to arbitrary values (see
+{{ossification}}).
+
+If the sender does not have sufficient information to make an informed decision
+about Q Period, the sender SHOULD use Q Period of 128.
+
+
 ## Setting the Loss Event Bit on Outgoing Packets {#lossbit}
 
 The Unreported Loss counter is initialized to 0, and the L bit of every outgoing
 packet indicates whether the Unreported Loss counter is positive (L=1 if the
-counter is positive, and L=0 otherwise).
-
-The value of the Unreported Loss counter is decremented every time a packet with
-L=1 is sent.
+counter is positive, and L=0 otherwise).  The value of the Unreported Loss
+counter is decremented every time a packet with L=1 is sent.
 
 The value of the Unreported Loss counter is incremented for every packet that
 the protocol declares lost, using QUIC's existing loss detection machinery.
 
+This loss signaling is similar to loss signaling in {{?RFC7713}}, except the
+Loss Event bit is reporting the exact number of lost packets, whereas
+Echo Loss bit in {{?RFC7713}} is reporting an approximate number of lost bytes.
+
 Observation points can estimate the end-to-end loss, as determined by the
 upstream endpoint's loss detection machinery, by counting packets in this
 direction with a L bit equal to 1, as described in {{usage}}.
+
 
 # Using the Loss Bits for Passive Loss Measurement {#usage}
 
@@ -252,7 +268,7 @@ described in {{losscorrelation}} is a strong indication of the observer loss,
 whose magnitude is between the amount of such adjustment and the entirety of the
 upstream loss measured in {{upstreamloss}}.
 
-# Ossification Considerations
+# Ossification Considerations  {#ossification}
 
 Accurate loss information is not critical to the operation of any protocol,
 though its presence for a sufficient number of connections is important for the
@@ -292,8 +308,16 @@ a different Connection ID.
 
 This document makes no request of IANA.
 
+
+## Since version 01
+- Add reference to RFC7713
+
+## Since version 00
+- Rewrote to base this draft on {{LOSSBITS}}
+
+
 # Acknowledgments
 
 The sQuare Bit was originally specified by Kazuho Oku in early proposals for
-loss measurement, and is an instance of the "alternate marking" as defined in
+loss measurement and is an instance of the "alternate marking" as defined in
 {{!RFC8321}}.
