@@ -49,8 +49,6 @@ author:
     email: ilubashe@akamai.com
 
 normative:
-  IP: RFC0791
-  IPv6: RFC8200
 
 informative:
   QUIC-TRANSPORT: I-D.ietf-quic-transport
@@ -61,10 +59,10 @@ informative:
 --- abstract
 
 This draft adapts the general technique described in
-draft-ferrieuxhamchaoui-tsvwg-lossbits ({{LOSSBITS}}) for QUIC using reserved
-bits in QUIC v1 header.  It describes a method that employs two bits to allow
-endpoints to signal packet loss in a way that can be used by network devices to
-measure and locate the source of the loss.
+draft-ferrieuxhamchaoui-tsvwg-lossbits draft-ferrieuxhamchaoui-tsvwg-lossbits
+for QUIC using reserved bits in QUIC v1 header.  It describes a method that
+employs two bits to allow endpoints to signal packet loss in a way that can be
+used by network devices to measure and locate the source of the loss.
 
 
 --- middle
