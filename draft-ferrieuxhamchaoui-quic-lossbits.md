@@ -7,7 +7,7 @@ category: info
 
 ipr: trust200902
 area: Loss Signaling
-workgroup: TSVWG
+workgroup: QUIC
 keyword: Internet-Draft
 
 stand_alone: yes
@@ -59,10 +59,12 @@ informative:
 --- abstract
 
 This draft adapts the general technique described in
-draft-ferrieuxhamchaoui-tsvwg-lossbits draft-ferrieuxhamchaoui-tsvwg-lossbits
-for QUIC using reserved bits in QUIC v1 header.  It describes a method that
-employs two bits to allow endpoints to signal packet loss in a way that can be
-used by network devices to measure and locate the source of the loss.
+draft-ferrieuxhamchaoui-tsvwg-lossbits for QUIC using reserved bits in QUIC v1
+short header.  It describes a method that employs two bits to allow endpoints to
+signal packet loss in a way that can be used by network devices to measure and
+locate the source of the loss. A companion draft,
+draft-ferrieuxhamchaoui-tsvwg-lossbits-extension, describes negotiating this
+functionality as an extension in QUIC v1.
 
 
 --- middle
@@ -87,9 +89,9 @@ traffic delivered using QUIC is increasing every year. Therefore, is it
 imperative to measure packet loss experienced by QUIC users directly instead of
 relying on measuring TCP loss between similar endpoints.
 
-Since explicit path signals are preferred by {{!RFC8558}}, this document
-proposes adding two explicit loss bits to the clear portion of short headers to
-restore network operators' ability to maintain high QoS for QUIC users.
+Since explicit path signals are preferred by {{!RFC8558}}, two explicit loss
+bits in the clear portion of short headers are used to signal packet loss to
+on-path network devices.
 
 # Notational Conventions    {#conventions}
 
@@ -117,24 +119,27 @@ each connection 4-tuple and destination Connection ID.
 ## Setting the sQuare Bit on Outgoing Packets {#squarebit}
 
 The sQuare Value is initialized to the Initial Q Value (0 or 1) and is reflected
-in the Q bit of every outgoing packet.  The sQuare value is inverted after
-sending every N packets (Q Period is 2*N), where N is a parameter of the method,
-discussed below.
+in the Q bit of every outgoing packet. The sQuare value is inverted after
+sending every N packets (a Q run). Hence, Q Period is 2*N. The Q bit represents
+"packet color" as defined by {{?RFC8321}}.
 
 Observation points can estimate the upstream losses by counting the number of
 packets during a half period of the square signal, as described in {{usage}}.
 
-### Q Period Selection
+### Q Run Length Selection
 
-The sender is expected to choose Q Period based on the expected amount of loss
-and reordering on the path (see {{upstreamloss}}). The Q Period value MUST be at
-least 128 and be a power of 2. This requirement allows an Observer to infer the
-Q Period by obsering one period of the square signal. It also allows the
+The sender is expected to choose Q run length based on the expected amount of
+loss and reordering on the path (see {{upstreamloss}}). The Q run length MUST be
+at least 64 and be a power of 2. This requirement allows an Observer to infer
+the Q run length by obsering one period of the square signal. It also allows the
 Observer to identify flows that set the loss bits to arbitrary values (see
 {{ossification}}).
 
 If the sender does not have sufficient information to make an informed decision
-about Q Period, the sender SHOULD use Q Period of 128.
+about Q run length, the sender SHOULD use Q run of 64 packets. Alternatively,
+the sender MAY also choose a random Q run length for each connection, increasing
+the chances of using a Q run length that gives the best signal for some
+connections.
 
 
 ## Setting the Loss Event Bit on Outgoing Packets {#lossbit}
@@ -145,11 +150,14 @@ counter is positive, and L=0 otherwise).  The value of the Unreported Loss
 counter is decremented every time a packet with L=1 is sent.
 
 The value of the Unreported Loss counter is incremented for every packet that
-the protocol declares lost, using QUIC's existing loss detection machinery.
+the protocol declares lost, using QUIC's existing loss detection machinery. If
+the implementation is able to rescind the loss determination later, a positive
+Unreported Loss counter MAY be decremented due to the rescission, but it SHOULD
+NOT become negative.
 
 This loss signaling is similar to loss signaling in {{?RFC7713}}, except the
-Loss Event bit is reporting the exact number of lost packets, whereas
-Echo Loss bit in {{?RFC7713}} is reporting an approximate number of lost bytes.
+Loss Event bit is reporting the exact number of lost packets, whereas Echo Loss
+bit in {{?RFC7713}} is reporting an approximate number of lost bytes.
 
 Observation points can estimate the end-to-end loss, as determined by the
 upstream endpoint's loss detection machinery, by counting packets in this

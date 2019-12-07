@@ -166,8 +166,9 @@ counter is decremented every time a packet with L=1 is sent.
 
 The value of the Unreported Loss counter is incremented for every packet that
 the protocol declares lost, using whatever loss detection machinery the protocol
-employs. If the protocol is able to rescind the loss determination later, the
-Unreported Loss counter SHOULD NOT be decremented due to the rescission.
+employs. If the protocol is able to rescind the loss determination later, a
+positive Unreported Loss counter MAY be decremented due to the rescission, but
+it SHOULD NOT become negative.
 
 This loss signaling is similar to loss signaling in {{ConEx}}, except the Loss
 Event bit is reporting the exact number of lost packets, whereas Echo Loss bit
