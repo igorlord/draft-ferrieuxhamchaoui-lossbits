@@ -49,10 +49,10 @@ author:
     email: ilubashe@akamai.com
 
 normative:
-
-informative:
   QUIC-TRANSPORT: I-D.ietf-quic-transport
   TRANSPORT-ENCRYPT: I-D.ietf-tsvwg-transport-encrypt
+
+informative:
   GREASE: I-D.ietf-tls-grease
   LOSSBITS: I-D.ferrieuxhamchaoui-tsvwg-lossbits
 
@@ -326,4 +326,4 @@ This document makes no request of IANA.
 
 The sQuare Bit was originally specified by Kazuho Oku in early proposals for
 loss measurement and is an instance of the "alternate marking" as defined in
-{{!RFC8321}}.
+{{?RFC8321}}.
