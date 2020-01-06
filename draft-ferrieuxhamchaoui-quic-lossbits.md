@@ -54,7 +54,6 @@ normative:
 
 informative:
   GREASE: I-D.ietf-tls-grease
-  LOSSBITS: I-D.ferrieuxhamchaoui-tsvwg-lossbits
   DATAGRAM: I-D.pauly-quic-datagram
 
 --- abstract
@@ -138,7 +137,7 @@ severe loss if N is too small, while short connections may not yield a useful
 upstream loss measurement if N is too large (see {{upstreamloss}}).
 
 The value of N MUST be at least 64 and be a power of 2. This requirement allows
-an Observer to infer the Q run length by obsering one period of the square
+an Observer to infer the Q run length by observing one period of the square
 signal. It also allows the Observer to identify flows that set the loss bits to
 arbitrary values (see {{ossification}}).
 
@@ -308,7 +307,7 @@ data integrity and secrecy.
 
 ## Optimistic ACK Attack
 
-A defence against an Opportunistic ACK Attack {{QUIC-TRANSPORT}} involves a
+A defense against an Opportunistic ACK Attack {{QUIC-TRANSPORT}} involves a
 sender randomly skipping packet numbers to detect a receiver acknowledging
 packet numbers that have never been sent. Q-bit signal may inform the attacker
 which packet numbers were skipped on purpose and which had been actually lost
@@ -336,11 +335,11 @@ when it changes Connection ID used for outgoing packets.  It would also need to
 avoid incrementing Unreported Loss counter for loss of packets sent with a
 different Connection ID.
 
-Accorate loss information allows identification and correlation of network
+Accurate loss information allows identification and correlation of network
 conditions upstream and downstream of the observer. This could be a powerful
-tool to identify connections that attempt to hide their orign networks, if the
+tool to identify connections that attempt to hide their origin networks, if the
 adversary is able to affect network conditions in those origin networks.
-Similar information can be obtained by packet timing and infering congestion
+Similar information can be obtained by packet timing and inferring congestion
 controller response to network events, but loss information provides a clearer
 signal.
 
