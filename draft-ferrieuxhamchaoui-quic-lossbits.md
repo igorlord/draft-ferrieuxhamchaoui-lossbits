@@ -55,6 +55,7 @@ normative:
 informative:
   GREASE: I-D.ietf-tls-grease
   LOSSBITS: I-D.ferrieuxhamchaoui-tsvwg-lossbits
+  DATAGRAM: I-D.pauly-quic-datagram
 
 --- abstract
 
@@ -62,8 +63,7 @@ This draft adapts the general technique described in
 draft-ferrieuxhamchaoui-tsvwg-lossbits for QUIC using reserved bits in QUIC v1
 short header.  It describes a method that employs two bits to allow endpoints to
 signal packet loss in a way that can be used by network devices to measure and
-locate the source of the loss. A companion draft,
-draft-ferrieuxhamchaoui-tsvwg-lossbits-extension, describes negotiating this
+locate the source of the loss. In further describes a way to negotiate this
 functionality as an extension in QUIC v1.
 
 
@@ -101,19 +101,22 @@ interpreted as described in {{!RFC2119}}.
 
 # Loss Bits
 
-The proposal introduces two bits that are to be present in packets with a short
+The draft introduces two bits that are to be present in packets with a short
 header.  Therefore, only loss of short header packets is reported using loss
 bits.  Whenever this specification refers to packets, it is referring only to
 packets with short headers.
 
 * Q: The "sQuare signal" bit is toggled every N outgoing packets as explained
-  below in {{squarebit}}.
+  below in {{squarebit}}. This is a previously-reserved short header bit 0x10.
 
 * L: The "Loss event" bit is set to 0 or 1 according to the Unreported Loss
-  counter, as explained below in {{lossbit}}.
+  counter, as explained below in {{lossbit}}. This is a previously-reserved
+  short header bit 0x08.
 
 Each endpoint maintains appropriate counters independently and separately for
-each connection 4-tuple and destination Connection ID.
+each connection 4-tuple and destination Connection ID.  Whenever this
+specification refers to connections, it is referring to packets sharing the same
+4-tuple and destination Connection ID.
 
 
 ## Setting the sQuare Bit on Outgoing Packets {#squarebit}
@@ -124,22 +127,29 @@ sending every N packets (a Q run). Hence, Q Period is 2*N. The Q bit represents
 "packet color" as defined by {{?RFC8321}}.
 
 Observation points can estimate the upstream losses by counting the number of
-packets during a half period of the square signal, as described in {{usage}}.
+packets during one period of the square signal, as described in {{usage}}.
 
 ### Q Run Length Selection
 
-The sender is expected to choose Q run length based on the expected amount of
-loss and reordering on the path (see {{upstreamloss}}). The Q run length MUST be
-at least 64 and be a power of 2. This requirement allows an Observer to infer
-the Q run length by obsering one period of the square signal. It also allows the
-Observer to identify flows that set the loss bits to arbitrary values (see
-{{ossification}}).
+The sender is expected to choose N (Q run length) based on the expected amount
+of loss and reordering on the path.  The choice of N strikes a compromise -- the
+observation could become too unreliable in case of packet reordering and/or
+severe loss if N is too small, while short connections may not yield a useful
+upstream loss measurement if N is too large (see {{upstreamloss}}).
+
+The value of N MUST be at least 64 and be a power of 2. This requirement allows
+an Observer to infer the Q run length by obsering one period of the square
+signal. It also allows the Observer to identify flows that set the loss bits to
+arbitrary values (see {{ossification}}).
 
 If the sender does not have sufficient information to make an informed decision
-about Q run length, the sender SHOULD use Q run of 64 packets. Alternatively,
-the sender MAY also choose a random Q run length for each connection, increasing
-the chances of using a Q run length that gives the best signal for some
-connections.
+about Q run length, the sender SHOULD use N=64, since this value has been
+extensively tried in large-scale field tests and yielded good results.
+Alternatively, the sender MAY also choose a random N for each connection,
+increasing the chances of using a Q run length that gives the best signal for
+some connections.
+
+The sender MUST keep the value of N constant for a given connection.
 
 
 ## Setting the Loss Event Bit on Outgoing Packets {#lossbit}
@@ -199,38 +209,28 @@ packets with L=1 that they have a greater chance of arriving at the observer.
 
 ## Upstream Loss   {#upstreamloss}
 
-Blocks of N (half of Q Period) consecutive packets are sent with the same value
-of the Q bit, followed by another block of N packets with inverted value of the
+Blocks of N (Q run length) consecutive packets are sent with the same value of
+the Q bit, followed by another block of N packets with an inverted value of the
 Q bit. Hence, knowing the value of N, an on-path observer can estimate the
-amount of loss after observing at least N packets. The upstream loss rate is one
-minus the average number of packets in a block of packets with the same Q value
-divided by N.
+amount of loss after observing at least N packets. The upstream loss rate (`u`)
+is one minus the average number of packets in a block of packets with the same Q
+value (`p`) divided by N (`u=1-avg(p)/N`).
 
 The observer needs to be able to tolerate packet reordering that can blur the
 edges of the square signal.
 
-The observer also needs to differentiate packets as belonging to different
+The observer needs to differentiate packets as belonging to different
 connections, since they use independent counters.
 
-The choice of N strikes a compromise: the observation could become too
-unreliable in case of packet reordering and loss if N is too small; and when N
-is too large, short connections may not yield a useful upstream loss
-measurement.
-
-To leave some room for adaptation, we only constrain the sender to select an N
-that is (1) constant for a given connection and (2) equal to a power of two.
-The latter allows on-path observers to derive N after a few periods.  It is thus
-also acceptable for a simple implementation to choose a global constant; N=64
-has been extensively tried in large-scale field tests and yielded good results.
 
 ## Correlating End-to-End and Upstream Loss    {#losscorrelation}
 
-Upstream loss is calculated by observing the actual packets that did not suffer
-the upstream loss.  End-to-end loss, however, is calculated by observing
-subsequent packets after the sender's protocol detected the loss.  Hence,
-end-to-end loss is generally observed with a delay of between 1 RTT (loss
-declared due to multiple duplicate acknowledgments) and 1 RTO (loss declared due
-to a timeout) relative to the upstream loss.
+Upstream loss is calculated by observing packets that did not suffer the
+upstream loss.  End-to-end loss, however, is calculated by observing subsequent
+packets after the sender's protocol detected the loss.  Hence, end-to-end loss
+is generally observed with a delay of between 1 RTT (loss declared due to
+multiple duplicate acknowledgments) and 1 RTO (loss declared due to a timeout)
+relative to the upstream loss.
 
 The connection RTT can sometimes be estimated by timing protocol handshake
 messages. This RTT estimate can be greatly improved by observing a dedicated
@@ -244,16 +244,18 @@ estimate RTT of the connection, it should accumulate loss measurements over time
 periods of at least 4 times the typical RTT for the observed connections.
 
 If the calculated upstream loss rate exceeds the end-to-end loss rate calculated
-in {{endtoendloss}}, then either the Q Period is too short for the amount of
+in {{endtoendloss}}, then either the Q run length is too short for the amount of
 packet reordering or there is observer loss, described in {{observerloss}}. If
 this happens, the observer SHOULD adjust the calculated upstream loss rate to
 match end-to-end loss rate.
+
 
 ## Downstream Loss   {#downstreamloss}
 
 Because downstream loss affects only those packets that did not suffer upstream
 loss, the end-to-end loss rate (`e`) relates to the upstream loss rate (`u`) and
 downstream loss rate (`d`) as `(1-u)(1-d)=1-e`. Hence, `d=(e-u)/(1-u)`.
+
 
 ## Observer Loss   {#observerloss}
 
@@ -262,7 +264,7 @@ device that mirrors network packets of interest to a device that performs
 analysis and measurement on the mirrored packets. The observer loss is the loss
 that occurs on the mirror path.
 
-Observer loss affects upstream loss rate measurement since it causes the
+Observer loss affects upstream loss rate measurement, since it causes the
 observer to account for fewer packets in a block of identical Q bit values (see
 {{upstreamloss)}).  The end-to-end loss rate measurement, however, is unaffected
 by the observer loss, since it is a measurement of the fraction of packets with
@@ -272,54 +274,91 @@ the set L bit value, and the observer loss would affect all packets equally (see
 The need to adjust the upstream loss rate down to match end-to-end loss rate as
 described in {{losscorrelation}} is a strong indication of the observer loss,
 whose magnitude is between the amount of such adjustment and the entirety of the
-upstream loss measured in {{upstreamloss}}.
+upstream loss measured in {{upstreamloss}}. Alternatively, a high apparent
+upstream loss rate could be an indication of significant reordering, possibly
+due to packets belonging to a single connection being multiplexed over several
+upstream paths with different latency characteristics.
+
+
+# Transport Parameter  {#tp}
+
+........
 
 # Ossification Considerations  {#ossification}
 
-Accurate loss information is not critical to the operation of any protocol,
-though its presence for a sufficient number of connections is important for the
-operation of the networks.
+Accurate loss reporting signal is not critical for the operation QUIC protocol,
+though its presence in a sufficient number of connections is important for the
+operation of networks.
 
-The loss bits are amenable to "greasing" described in {{GREASE}}, if the
-protocol designers are not ready to dedicate (and ossify) bits used for loss
-reporting to this function.  The greasing could be accomplished similarly to the
-Latency Spin bit greasing in {{QUIC-TRANSPORT}}.  Namely, implementations could
-decide that a fraction of connections should not encode loss information in the
-loss bits and, instead, the bits would be set to arbitrary values. The observers
-would need to be ready to ignore connections with loss information more
-resembling noise than the expected signal.
+The loss bits are amenable to "greasing" described in {{GREASE}} and MUST be
+greased.  The greasing should be accomplished similarly to the Latency Spin bit
+greasing in {{QUIC-TRANSPORT}}.  Namely, implementations MUST disable loss
+reporting for a given connection with a certain likelihood, such that on average
+loss reporting is disabled for at least one eighth of connections (see {{tp}}).
+
 
 # Security Considerations
 
-Passive loss observation has been a part of the network operations for a long
-time, so exposing loss information to the network does not add new security
-concerns.
+The Q-bit signal does not provide any information that cannot be observed by
+simply counting packets transiting a network path. The L-bit signal discloses
+internal state of the protocol loss detection machinery, but this signal can
+also be gleamed by timing packets and observing congestion controller
+response. Hence, loss bits do not provide a viable new mechanism to attack QUIC
+data integrity and secrecy.
+
+## Optimistic ACK Attack
+
+A defence against an Opportunistic ACK Attack {{QUIC-TRANSPORT}} involves a
+sender randomly skipping packet numbers to detect a receiver acknowledging
+packet numbers that have never been sent. Q-bit signal may inform the attacker
+which packet numbers were skipped on purpose and which had been actually lost
+(and are, therefore, safe for the attacker to acknowledge). To use Q-bit for
+this purpose, the attacker must first receive at least an entire Q run of
+packets, which renders the attack ineffective against a delay-sensitive
+congestion controller.
+
+For QUIC v1 connections, the attacker can examine offsets in STREAM frames to
+determine whether packet number skips are deliberate, so Q-bit signal provides
+little new information. However, an endpoint that implements {{DATAGRAM}} and
+uses a loss-based congestion controller MAY include deliberately skipped packet
+numbers in the current Q run.
+
 
 # Privacy Considerations
 
-Guarding user's privacy is an important goal for modern protocols and protocol
-extensions per {{?RFC7258}}.  While an explicit loss signal -- a preferred way
-to share loss information per {{!RFC8558}} -- helps to minimize unintentional
-exposure of additional information, implementations of loss reporting must
-ensure that loss information does not compromise protocol's privacy goals.
+To minimize unintentional exposure of information, loss bits provide an explicit
+loss signal -- a preferred way to share information per {{!RFC8558}}.
 
-For example, {{QUIC-TRANSPORT}} allows changing Connection IDs in the middle of
-a connection to reduce the likelihood of a passive observer linking old and new
-subflows to the same device. A QUIC implementation would need to reset all
-counters when it changes Connection ID used for outgoing packets.  It would also
-need to avoid incrementing Unreported Loss counter for loss of packets sent with
-a different Connection ID.
+{{QUIC-TRANSPORT}} allows changing Connection IDs in the middle of a connection
+to reduce the likelihood of a passive observer linking old and new subflows to
+the same device. Hence, a QUIC implementation would need to reset all counters
+when it changes Connection ID used for outgoing packets.  It would also need to
+avoid incrementing Unreported Loss counter for loss of packets sent with a
+different Connection ID.
+
+Accorate loss information allows identification and correlation of network
+conditions upstream and downstream of the observer. This could be a powerful
+tool to identify connections that attempt to hide their orign networks, if the
+adversary is able to affect network conditions in those origin networks.
+Similar information can be obtained by packet timing and infering congestion
+controller response to network events, but loss information provides a clearer
+signal.
+
+Implementations MUST allow administrators of clients and servers to disable loss
+reporting either globally or on a per-connection basis.  Additionally, as
+described in {{ossification}}, loss reporting MUST be disabled for a certain
+fraction of all connections.
+
 
 # IANA Considerations
 
-This document makes no request of IANA.
+This document registers a new value in the QUIC Transport Parameter Registry:
 
+Value: 0x1055 (if this document is approved)
 
-## Since version 01
-- Add reference to RFC7713
+Parameter Name: loss_bits
 
-## Since version 00
-- Rewrote to base this draft on {{LOSSBITS}}
+Specification: ..............
 
 
 # Acknowledgments
@@ -327,3 +366,6 @@ This document makes no request of IANA.
 The sQuare Bit was originally specified by Kazuho Oku in early proposals for
 loss measurement and is an instance of the "alternate marking" as defined in
 {{?RFC8321}}.
+
+Many thanks to Christian Huitema for pointing out the interaction of Q-bit and
+Optimistic ACK Attack defence.
