@@ -281,7 +281,16 @@ upstream paths with different latency characteristics.
 
 # Transport Parameter  {#tp}
 
-........
+The use of the loss bits is negotiated using a transport parameter:
+
+loss_bits (0x1055):
+
+: Presence of the loss_bits transport parameter indicates that the sender
+  supports the loss bits extension.  This parameter has a zero-length value.
+
+When both peers send the loss_bits transport parameter, they both MUST
+change the way short packets are encrypted and decrypted to allow for
+loss bits to be sent.
 
 # Ossification Considerations  {#ossification}
 
