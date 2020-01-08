@@ -281,7 +281,20 @@ upstream paths with different latency characteristics.
 
 # Transport Parameter  {#tp}
 
-........
+The use of the loss bits is negotiated using a transport parameter:
+
+loss_bits (0x1055):
+
+: The loss bits transport parameter is an integer value that can be set
+  to 0 or 1 indicating the level of QL bits support.
+
+When loss_bits is set to 0, the peer is allowed to change R-bits in the
+short packet header to QL-bits if the peer sends loss_bits=1.
+
+When loss_bits is set to 1, the sender will change R-bits to QL-bits if
+the peer sends the loss_bits transport parameter set to either 0 or 1.
+
+A client MUST NOT use remembered value of loss_bits for 0-RTT connection.
 
 # Ossification Considerations  {#ossification}
 
