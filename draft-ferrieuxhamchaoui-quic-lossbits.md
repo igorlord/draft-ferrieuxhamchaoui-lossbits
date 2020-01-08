@@ -294,6 +294,8 @@ short packet header to QL-bits if the peer sends loss_bits=1.
 When loss_bits is set to 1, the sender will change R-bits to QL-bits if
 the peer sends the loss_bits transport parameter set to either 0 or 1.
 
+A client MUST NOT use remembered value of loss_bits for 0-RTT connection.
+
 # Ossification Considerations  {#ossification}
 
 Accurate loss reporting signal is not critical for the operation QUIC protocol,
