@@ -51,6 +51,7 @@ author:
 normative:
   QUIC-TRANSPORT: I-D.ietf-quic-transport
   TRANSPORT-ENCRYPT: I-D.ietf-tsvwg-transport-encrypt
+  QUIC-TLS: I-D.ietf-quic-tls
 
 informative:
   GREASE: I-D.ietf-tls-grease
@@ -295,6 +296,29 @@ When loss_bits is set to 1, the sender will change R-bits to QL-bits if
 the peer sends the loss_bits transport parameter set to either 0 or 1.
 
 A client MUST NOT use remembered value of loss_bits for 0-RTT connection.
+
+# Mechanics
+
+## Short Packet Header
+
+The QL-bits replace the R-bits in the short packet header
+(see Section 17.3 of {{QUIC-TRANSPORT}}).  The Q bit is placed in bit
+position 4 and the L bit is placed in position 3.
+
+## Header Protection
+
+Unlike the R-bits, the QL-bits are not protected.  The first byte of
+the header protection mask used to protect short packet headers has
+its five most significant bits masked out instead of three.
+
+The algorithm specified in Section 5.4.1 of {{QUIC-TLS}} changes as
+follows:
+
+~~~
+   else:
+      # Short header: 3 bits masked
+      packet[0] ^= mask[0] & 0x07
+~~~
 
 # Ossification Considerations  {#ossification}
 
