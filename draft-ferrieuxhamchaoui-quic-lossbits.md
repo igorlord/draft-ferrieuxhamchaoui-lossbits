@@ -41,11 +41,6 @@ author:
     role: editor
     name: Igor Lubashev
     org: Akamai Technologies
-    street: 150 Broadway
-    city: Cambridge
-    code: 02142
-    region: MA
-    country: USA
     email: ilubashe@akamai.com
   -
     ins: D. Tikhonov
