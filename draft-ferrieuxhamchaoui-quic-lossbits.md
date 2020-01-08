@@ -302,8 +302,23 @@ A client MUST NOT use remembered value of loss_bits for 0-RTT connection.
 ## Short Packet Header
 
 The QL-bits replace the R-bits in the short packet header
-(see Section 17.3 of {{QUIC-TRANSPORT}}).  The Q bit is placed in bit
-position 4 and the L bit is placed in position 3.
+(see Section 17.3 of {{QUIC-TRANSPORT}}).
+
+~~~
+    0 1 2 3 4 5 6 7
+   +-+-+-+-+-+-+-+-+
+   |0|1|S|Q|L|K|P P|
+   +-+-+-+-+-+-+-+-+
+~~~
+
+sQuare Bit (Q):
+
+: The fourth most significant bit (0x10) is the sQuare bit, set as
+  described in {{squarebit}}.
+
+Loss Bit (L):
+: The fifth most significant bit (0x08) is the loss event bit, set as
+  described in {{lossbit}}.
 
 ## Header Protection
 
