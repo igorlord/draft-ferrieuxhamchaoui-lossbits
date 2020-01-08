@@ -285,12 +285,14 @@ The use of the loss bits is negotiated using a transport parameter:
 
 loss_bits (0x1055):
 
-: Presence of the loss_bits transport parameter indicates that the sender
-  supports the loss bits extension.  This parameter has a zero-length value.
+: The loss bits transport parameter is an integer value that can be set
+  to 0 or 1 indicating the level of QL bits support.
 
-When both peers send the loss_bits transport parameter, they both MUST
-change the way short packets are encrypted and decrypted to allow for
-loss bits to be sent.
+When loss_bits is set to 0, the peer is allowed to change R-bits in the
+short packet header to QL-bits if the peer sends loss_bits=1.
+
+When loss_bits is set to 1, the sender will change R-bits to QL-bits if
+the peer sends the loss_bits transport parameter set to either 0 or 1.
 
 # Ossification Considerations  {#ossification}
 
