@@ -47,6 +47,12 @@ author:
     region: MA
     country: USA
     email: ilubashe@akamai.com
+  -
+    ins: D. Tikhonov
+    role: editor
+    name: Dmitri Tikhonov
+    org: LiteSpeed Technologies
+    email: dtikhonov@litespeedtech.com
 
 normative:
   QUIC-TRANSPORT: I-D.ietf-quic-transport
