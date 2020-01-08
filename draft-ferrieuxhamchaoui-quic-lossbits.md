@@ -108,11 +108,10 @@ bits.  Whenever this specification refers to packets, it is referring only to
 packets with short headers.
 
 * Q: The "sQuare signal" bit is toggled every N outgoing packets as explained
-  below in {{squarebit}}. This is a previously-reserved short header bit 0x10.
+  below in {{squarebit}}.
 
 * L: The "Loss event" bit is set to 0 or 1 according to the Unreported Loss
-  counter, as explained below in {{lossbit}}. This is a previously-reserved
-  short header bit 0x08.
+  counter, as explained below in {{lossbit}}.
 
 Each endpoint maintains appropriate counters independently and separately for
 each connection 4-tuple and destination Connection ID.  Whenever this
@@ -120,7 +119,7 @@ specification refers to connections, it is referring to packets sharing the same
 4-tuple and destination Connection ID.
 
 
-## Setting the sQuare Bit on Outgoing Packets {#squarebit}
+## Setting the sQuare Signal Bit on Outgoing Packets {#squarebit}
 
 The sQuare Value is initialized to the Initial Q Value (0 or 1) and is reflected
 in the Q bit of every outgoing packet. The sQuare value is inverted after
@@ -287,23 +286,23 @@ The use of the loss bits is negotiated using a transport parameter:
 
 loss_bits (0x1055):
 
-: The loss bits transport parameter is an integer value that can be set
-  to 0 or 1 indicating the level of QL bits support.
+: The loss bits transport parameter is an integer value, encoded as a
+  variable-length integer, that can be set to 0 or 1 indicating the level of
+  QL-bits support.
 
-When loss_bits is set to 0, the peer is allowed to change R-bits in the
+When loss_bits parameter is present, the peer is allowed to change R-bits in the
 short packet header to QL-bits if the peer sends loss_bits=1.
 
-When loss_bits is set to 1, the sender will change R-bits to QL-bits if
-the peer sends the loss_bits transport parameter set to either 0 or 1.
+When loss_bits is set to 1, the sender will change R-bits to QL-bits if the peer
+includes the loss_bits transport parameter.
 
 A client MUST NOT use remembered value of loss_bits for 0-RTT connection.
 
-# Mechanics
 
-## Short Packet Header
+# Short Packet Header  {#shortheader}
 
-The QL-bits replace the R-bits in the short packet header
-(see Section 17.3 of {{QUIC-TRANSPORT}}).
+When sending loss bits has been negotiated, the QL-bits replace the R-bits in
+the short packet header (see Section 17.3 of {{QUIC-TRANSPORT}}).
 
 ~~~
     0 1 2 3 4 5 6 7
@@ -312,20 +311,22 @@ The QL-bits replace the R-bits in the short packet header
    +-+-+-+-+-+-+-+-+
 ~~~
 
-sQuare Bit (Q):
+sQuare Signal Bit (Q):
 
-: The fourth most significant bit (0x10) is the sQuare bit, set as
+: The fourth most significant bit (0x10) is the sQuare signal bit, set as
   described in {{squarebit}}.
 
-Loss Bit (L):
-: The fifth most significant bit (0x08) is the loss event bit, set as
+Loss Event Bit (L):
+: The fifth most significant bit (0x08) is the Loss event bit, set as
   described in {{lossbit}}.
 
-## Header Protection
 
-Unlike the R-bits, the QL-bits are not protected.  The first byte of
-the header protection mask used to protect short packet headers has
-its five most significant bits masked out instead of three.
+# Header Protection
+
+Unlike the R-bits, the QL-bits are not protected.  When sending loss bits has
+been negotiated, the first byte of the header protection mask used to protect
+short packet headers has its five most significant bits masked out instead of
+three.
 
 The algorithm specified in Section 5.4.1 of {{QUIC-TLS}} changes as
 follows:
@@ -336,6 +337,7 @@ follows:
       packet[0] ^= mask[0] & 0x07
 ~~~
 
+
 # Ossification Considerations  {#ossification}
 
 Accurate loss reporting signal is not critical for the operation QUIC protocol,
@@ -344,9 +346,9 @@ operation of networks.
 
 The loss bits are amenable to "greasing" described in {{GREASE}} and MUST be
 greased.  The greasing should be accomplished similarly to the Latency Spin bit
-greasing in {{QUIC-TRANSPORT}}.  Namely, implementations MUST disable loss
-reporting for a given connection with a certain likelihood, such that on average
-loss reporting is disabled for at least one eighth of connections (see {{tp}}).
+greasing in {{QUIC-TRANSPORT}}.  Namely, implementations MUST NOT include
+loss_bits transport parameter for a random selection of at least one in every 16
+connections.
 
 
 # Security Considerations
@@ -415,8 +417,8 @@ Specification: ..............
 
 # Acknowledgments
 
-The sQuare Bit was originally specified by Kazuho Oku in early proposals for
-loss measurement and is an instance of the "alternate marking" as defined in
+The sQuare signal bit was originally specified by Kazuho Oku in early proposals
+for loss measurement and is an instance of the "alternate marking" as defined in
 {{?RFC8321}}.
 
 Many thanks to Christian Huitema for pointing out the interaction of Q-bit and
