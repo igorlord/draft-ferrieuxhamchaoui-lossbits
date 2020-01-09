@@ -375,9 +375,11 @@ congestion controller.
 
 For QUIC v1 connections, the attacker can examine offsets in STREAM frames to
 determine whether packet number skips are deliberate, so Q-bit signal provides
-little new information. However, an endpoint that implements {{DATAGRAM}} and
-uses a loss-based congestion controller MAY include deliberately skipped packet
-numbers in the current Q run.
+no new information (but it does save the attacker the need to remove packet
+protection). However, an endpoint that implements {{DATAGRAM}} and uses a
+loss-based congestion controller MAY shorten the current Q run by the number of
+skipped packets. For example, skipping a single packet number will invert the
+sQuare signal one outgoing packet sooner.
 
 
 # Privacy Considerations
