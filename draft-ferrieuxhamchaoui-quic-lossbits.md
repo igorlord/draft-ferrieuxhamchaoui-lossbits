@@ -166,12 +166,12 @@ Unreported Loss counter MAY be decremented due to the rescission, but it SHOULD
 NOT become negative.
 
 This loss signaling is similar to loss signaling in {{?RFC7713}}, except the
-Loss Event bit is reporting the exact number of lost packets, whereas Echo Loss
-bit in {{?RFC7713}} is reporting an approximate number of lost bytes.
+Loss Event bit is reporting the exact number of lost packets, whereas the Echo
+Loss bit in {{?RFC7713}} is reporting an approximate number of lost bytes.
 
 Observation points can estimate the end-to-end loss, as determined by the
 upstream endpoint's loss detection machinery, by counting packets in this
-direction with a L bit equal to 1, as described in {{usage}}.
+direction with the L bit equal to 1, as described in {{usage}}.
 
 
 # Using the Loss Bits for Passive Loss Measurement {#usage}
@@ -197,7 +197,7 @@ above.
 ## End-To-End Loss    {#endtoendloss}
 
 The Loss Event bit allows an observer to calculate the end-to-end loss rate by
-counting packets with L bit value of 0 and 1 for a given connection. The
+counting packets with the L bit value of 0 and 1 for a given connection. The
 end-to-end loss rate is the fraction of packets with L=1.
 
 The simplifying assumption here is that upstream loss affects packets with L=0
@@ -366,18 +366,18 @@ data integrity and secrecy.
 
 A defense against an Optimistic ACK Attack {{QUIC-TRANSPORT}} involves a
 sender randomly skipping packet numbers to detect a receiver acknowledging
-packet numbers that have never been sent. Q-bit signal may inform the attacker
-which packet numbers were skipped on purpose and which had been actually lost
-(and are, therefore, safe for the attacker to acknowledge). To use Q-bit for
-this purpose, the attacker must first receive at least an entire Q run of
-packets, which renders the attack ineffective against a delay-sensitive
-congestion controller.
+packet numbers that have never been sent. The Q-bit signal may inform the
+attacker which packet numbers were skipped on purpose and which had
+been actually lost (and are, therefore, safe for the attacker to
+acknowledge). To use the Q-bit for this purpose, the attacker must first
+receive at least an entire Q run of packets, which renders the attack
+ineffective against a delay-sensitive congestion controller.
 
 For QUIC v1 connections, the attacker can examine offsets in STREAM frames to
-determine whether packet number skips are deliberate, so Q-bit signal provides
-little new information. However, an endpoint that implements {{DATAGRAM}} and
-uses a loss-based congestion controller MAY include deliberately skipped packet
-numbers in the current Q run.
+determine whether packet number skips are deliberate, so the Q-bit signal
+provides little new information. However, an endpoint that implements
+{{DATAGRAM}} and uses a loss-based congestion controller MAY include
+deliberately skipped packet numbers in the current Q run.
 
 
 # Privacy Considerations
