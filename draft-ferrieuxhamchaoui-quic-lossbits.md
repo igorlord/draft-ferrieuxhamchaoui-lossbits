@@ -280,7 +280,7 @@ due to packets belonging to a single connection being multiplexed over several
 upstream paths with different latency characteristics.
 
 
-# Implementation
+# QUIC v1 Implementation
 
 ## Transport Parameter  {#tp}
 
