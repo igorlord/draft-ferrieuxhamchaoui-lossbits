@@ -280,7 +280,9 @@ due to packets belonging to a single connection being multiplexed over several
 upstream paths with different latency characteristics.
 
 
-# Transport Parameter  {#tp}
+# Implementation
+
+## Transport Parameter  {#tp}
 
 The use of the loss bits is negotiated using a transport parameter:
 
@@ -299,7 +301,7 @@ includes the loss_bits transport parameter.
 A client MUST NOT use remembered value of loss_bits for 0-RTT connection.
 
 
-# Short Packet Header  {#shortheader}
+## Short Packet Header  {#shortheader}
 
 When sending loss bits has been negotiated, the QL-bits replace the R-bits in
 the short packet header (see Section 17.3 of {{QUIC-TRANSPORT}}).
@@ -321,7 +323,7 @@ Loss Event Bit (L):
   described in {{lossbit}}.
 
 
-# Header Protection
+## Header Protection
 
 Unlike the R-bits, the QL-bits are not protected.  When sending loss bits has
 been negotiated, the first byte of the header protection mask used to protect
