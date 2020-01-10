@@ -360,12 +360,12 @@ method.  Latency spin bit signal edge can be used for the same purpose.
 
 # Security Considerations
 
-The Q-bit signal does not provide any information that cannot be observed by
-simply counting packets transiting a network path. The L-bit signal discloses
-internal state of the protocol loss detection machinery, but this signal can
-also be gleamed by timing packets and observing congestion controller
-response. Hence, loss bits do not provide a viable new mechanism to attack QUIC
-data integrity and secrecy.
+In the absence of packet loss, the Q-bit signal does not provide any information
+that cannot be observed by simply counting packets transiting a network
+path. The L-bit signal discloses internal state of the protocol's loss detection
+machinery, but this signal can often be gleamed by timing packets and observing
+congestion controller response. Hence, loss bits do not provide a viable new
+mechanism to attack QUIC data integrity and secrecy.
 
 ## Optimistic ACK Attack
 
@@ -378,11 +378,14 @@ acknowledge). To use the Q-bit for this purpose, the attacker must first
 receive at least an entire Q run of packets, which renders the attack
 ineffective against a delay-sensitive congestion controller.
 
-For QUIC v1 connections, the attacker can examine offsets in STREAM frames to
-determine whether packet number skips are deliberate, so the Q-bit signal
-provides little new information. However, an endpoint that implements
-{{DATAGRAM}} and uses a loss-based congestion controller MAY include
-deliberately skipped packet numbers in the current Q run.
+For QUIC v1 connections, if the attacker can make its peer transmit data using a
+single large stream, examining offsets in STREAM frames can determine whether
+packet number skips are deliberate. In that case, the Q-bit signal provides no
+new information (but it does save the attacker the need to remove packet
+protection). However, an endpoint that communicates using {{DATAGRAM}} and uses
+a loss-based congestion controller MAY shorten the current Q run by the number
+of skipped packets. For example, skipping a single packet number will invert the
+sQuare signal one outgoing packet sooner.
 
 
 # Privacy Considerations
