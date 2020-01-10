@@ -352,6 +352,11 @@ greasing in {{QUIC-TRANSPORT}}.  Namely, implementations MUST NOT include
 loss_bits transport parameter for a random selection of at least one in every 16
 connections.
 
+It is possible to observe packet reordering near the edge of the square signal.
+A middle box might observe the signal and try to fix packet reordering that it
+can identify.  Only a small fraction of reordering can be fixed using this
+method, and latency spin bit signal edge can be used for the same purpose.
+
 
 # Security Considerations
 
