@@ -286,7 +286,7 @@ upstream paths with different latency characteristics.
 
 The use of the loss bits is negotiated using a transport parameter:
 
-loss_bits (0x1055):
+loss_bits (0x1057):
 
 : The loss bits transport parameter is an integer value, encoded as a
   variable-length integer, that can be set to 0 or 1 indicating the level of
@@ -415,7 +415,7 @@ fraction of all connections.
 
 This document registers a new value in the QUIC Transport Parameter Registry:
 
-Value: 0x1055 (if this document is approved)
+Value: 0x1057 (if this document is approved)
 
 Parameter Name: loss_bits
 
