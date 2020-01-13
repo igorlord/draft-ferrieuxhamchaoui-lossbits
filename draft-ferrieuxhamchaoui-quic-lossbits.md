@@ -290,21 +290,22 @@ loss_bits (0x1057):
 
 : The loss bits transport parameter is an integer value, encoded as a
   variable-length integer, that can be set to 0 or 1 indicating the level of
-  QL-bits support.
+  loss bits support.
 
-When loss_bits parameter is present, the peer is allowed to change R-bits in the
-short packet header to QL-bits if the peer sends loss_bits=1.
+When loss_bits parameter is present, the peer is allowed to use reserved bits in
+the short packet header as loss bits if the peer sends loss_bits=1.
 
-When loss_bits is set to 1, the sender will change R-bits to QL-bits if the peer
-includes the loss_bits transport parameter.
+When loss_bits is set to 1, the sender will use reserved bits as loss bits if
+the peer includes the loss_bits transport parameter.
 
 A client MUST NOT use remembered value of loss_bits for 0-RTT connection.
 
 
 ## Short Packet Header  {#shortheader}
 
-When sending loss bits has been negotiated, the QL-bits replace the R-bits in
-the short packet header (see Section 17.3 of {{QUIC-TRANSPORT}}).
+When sending loss bits has been negotiated, the reserved (R) bits are replaced
+by the loss (Q and L) bits in the short packet header (see Section 17.3 of
+{{QUIC-TRANSPORT}}).
 
 ~~~
     0 1 2 3 4 5 6 7
@@ -325,10 +326,10 @@ Loss Event Bit (L):
 
 ## Header Protection
 
-Unlike the R-bits, the QL-bits are not protected.  When sending loss bits has
-been negotiated, the first byte of the header protection mask used to protect
-short packet headers has its five most significant bits masked out instead of
-three.
+Unlike the reserved (R) bits, the loss (Q and L) bits are not protected.  When
+sending loss bits has been negotiated, the first byte of the header protection
+mask used to protect short packet headers has its five most significant bits
+masked out instead of three.
 
 The algorithm specified in Section 5.4.1 of {{QUIC-TLS}} changes as
 follows:
@@ -360,9 +361,9 @@ method.  Latency spin bit signal edge can be used for the same purpose.
 
 # Security Considerations
 
-In the absence of packet loss, the Q-bit signal does not provide any information
+In the absence of packet loss, the Q bit signal does not provide any information
 that cannot be observed by simply counting packets transiting a network
-path. The L-bit signal discloses internal state of the protocol's loss detection
+path. The L bit signal discloses internal state of the protocol's loss detection
 machinery, but this signal can often be gleamed by timing packets and observing
 congestion controller response. Hence, loss bits do not provide a viable new
 mechanism to attack QUIC data integrity and secrecy.
@@ -371,16 +372,16 @@ mechanism to attack QUIC data integrity and secrecy.
 
 A defense against an Optimistic ACK Attack {{QUIC-TRANSPORT}} involves a
 sender randomly skipping packet numbers to detect a receiver acknowledging
-packet numbers that have never been received. The Q-bit signal may inform the
+packet numbers that have never been received. The Q bit signal may inform the
 attacker which packet numbers were skipped on purpose and which had
 been actually lost (and are, therefore, safe for the attacker to
-acknowledge). To use the Q-bit for this purpose, the attacker must first
+acknowledge). To use the Q bit for this purpose, the attacker must first
 receive at least an entire Q run of packets, which renders the attack
 ineffective against a delay-sensitive congestion controller.
 
 For QUIC v1 connections, if the attacker can make its peer transmit data using a
 single large stream, examining offsets in STREAM frames can determine whether
-packet number skips are deliberate. In that case, the Q-bit signal provides no
+packet number skips are deliberate. In that case, the Q bit signal provides no
 new information (but it does save the attacker the need to remove packet
 protection). However, an endpoint that communicates using {{DATAGRAM}} and uses
 a loss-based congestion controller MAY shorten the current Q run by the number
@@ -431,5 +432,5 @@ The sQuare signal bit was originally specified by Kazuho Oku in early proposals
 for loss measurement and is an instance of the "alternate marking" as defined in
 {{?RFC8321}}.
 
-Many thanks to Christian Huitema for pointing out the interaction of Q-bit and
+Many thanks to Christian Huitema for pointing out the interaction of Q bit and
 Optimistic ACK Attack defence.
