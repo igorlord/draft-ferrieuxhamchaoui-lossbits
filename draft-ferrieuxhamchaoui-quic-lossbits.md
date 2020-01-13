@@ -372,7 +372,7 @@ mechanism to attack QUIC data integrity and secrecy.
 
 A defense against an Optimistic ACK Attack {{QUIC-TRANSPORT}} involves a
 sender randomly skipping packet numbers to detect a receiver acknowledging
-packet numbers that have never been sent. The Q bit signal may inform the
+packet numbers that have never been received. The Q bit signal may inform the
 attacker which packet numbers were skipped on purpose and which had
 been actually lost (and are, therefore, safe for the attacker to
 acknowledge). To use the Q bit for this purpose, the attacker must first
