@@ -380,7 +380,7 @@ receive at least an entire Q run of packets, which renders the attack
 ineffective against a delay-sensitive congestion controller.
 
 For QUIC v1 connections, if the attacker can make its peer transmit data using a
-single large stream, examining offsets in STREAM frames can determine whether
+single large stream, examining offsets in STREAM frames can reveal whether
 packet number skips are deliberate. In that case, the Q bit signal provides no
 new information (but it does save the attacker the need to remove packet
 protection). However, an endpoint that communicates using {{DATAGRAM}} and uses
