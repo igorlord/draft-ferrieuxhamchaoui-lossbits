@@ -150,7 +150,9 @@ Alternatively, the sender MAY also choose a random N for each connection,
 increasing the chances of using a Q run length that gives the best signal for
 some connections.
 
-The sender MUST keep the value of N constant for a given connection.
+The sender MUST keep the value of N constant for a given connection.  The sender
+can change the value of N during a QUIC connection by switching to a new
+destination Connection ID, if one is available.
 
 
 ## Setting the Loss Event Bit on Outgoing Packets {#lossbit}
