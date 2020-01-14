@@ -364,7 +364,7 @@ method.  Latency spin bit signal edge can be used for the same purpose.
 In the absence of packet loss, the Q bit signal does not provide any information
 that cannot be observed by simply counting packets transiting a network
 path. The L bit signal discloses internal state of the protocol's loss detection
-machinery, but this state can often be gleamed by timing packets and observing
+machinery, but this signal can often be gleamed by timing packets and observing
 congestion controller response. Hence, loss bits do not provide a viable new
 mechanism to attack QUIC data integrity and secrecy.
 
