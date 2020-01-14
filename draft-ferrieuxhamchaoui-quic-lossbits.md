@@ -115,9 +115,9 @@ packets with short headers.
   counter, as explained below in {{lossbit}}.
 
 Each endpoint maintains appropriate counters independently and separately for
-each connection 4-tuple and destination Connection ID.  Whenever this
+each connection 4-tuple and Destination Connection ID.  Whenever this
 specification refers to connections, it is referring to packets sharing the same
-4-tuple and destination Connection ID.  A "QUIC connection", however, refers to
+4-tuple and Destination Connection ID.  A "QUIC connection", however, refers to
 connections in the traditional QUIC sense.
 
 
@@ -153,7 +153,7 @@ some connections.
 
 The sender MUST keep the value of N constant for a given connection.  The sender
 can change the value of N during a QUIC connection by switching to a new
-destination Connection ID, if one is available.
+Destination Connection ID, if one is available.
 
 
 ## Setting the Loss Event Bit on Outgoing Packets {#lossbit}
@@ -397,12 +397,12 @@ sQuare signal one outgoing packet sooner.
 To minimize unintentional exposure of information, loss bits provide an explicit
 loss signal -- a preferred way to share information per {{!RFC8558}}.
 
-{{QUIC-TRANSPORT}} allows changing Connection IDs in the middle of a QUIC
+{{QUIC-TRANSPORT}} allows changing connection IDs in the middle of a QUIC
 connection to reduce the likelihood of a passive observer linking old and new
 subflows to the same device. Hence, a QUIC implementation would need to reset
-all counters when it changes Connection ID used for outgoing packets.  It would
+all counters when it changes connection ID used for outgoing packets.  It would
 also need to avoid incrementing Unreported Loss counter for loss of packets sent
-with a different Connection ID.
+with a different connection ID.
 
 Accurate loss information allows identification and correlation of network
 conditions upstream and downstream of the observer. This could be a powerful
