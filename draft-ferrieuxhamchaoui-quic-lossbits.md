@@ -85,10 +85,11 @@ moving the passive observer around.
 With QUIC, the equivalent transport headers are encrypted and passive packet
 loss observation is not possible, as described in {{TRANSPORT-ENCRYPT}}.
 
-QUIC could be routed by the network differently and the fraction of Internet
-traffic delivered using QUIC is increasing every year. Therefore, is it
-imperative to measure packet loss experienced by QUIC users directly instead of
-relying on measuring TCP loss between similar endpoints.
+Measuring TCP loss between similar endpoints cannot be relied upon to
+evaluate QUIC loss.  QUIC could be routed by the network differently and
+the fraction of Internet traffic delivered using QUIC is increasing every
+year.  It is imperative to measure packet loss experienced by QUIC users
+directly.
 
 Since explicit path signals are preferred by {{!RFC8558}}, two explicit loss
 bits in the clear portion of short headers are used to signal packet loss to
