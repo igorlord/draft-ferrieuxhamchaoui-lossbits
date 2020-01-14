@@ -72,8 +72,8 @@ functionality as an extension in QUIC v1.
 
 # Introduction
 
-Packet loss is a hard and pervasive problem of day-to-day network operation, and
-proactively detecting, measuring, and locating it is crucial to maintaining high
+Packet loss is a hard and pervasive problem of day-to-day network operation.
+Proactively detecting, measuring, and locating it is crucial to maintaining high
 QoS and timely resolution of crippling end-to-end throughput issues. To this
 effect, in a TCP-dominated world, network operators have been heavily relying on
 information present in the clear in TCP headers: sequence and acknowledgment
