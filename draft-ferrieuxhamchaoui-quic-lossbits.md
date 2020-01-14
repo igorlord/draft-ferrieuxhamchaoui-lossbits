@@ -126,7 +126,7 @@ in the Q bit of every outgoing packet. The sQuare value is inverted after
 sending every N packets (a Q run). Hence, Q Period is 2*N. The Q bit represents
 "packet color" as defined by {{?RFC8321}}.
 
-Observation points can estimate the upstream losses by counting the number of
+Observation points can estimate upstream losses by counting the number of
 packets during one period of the square signal, as described in {{usage}}.
 
 ### Q Run Length Selection
@@ -174,7 +174,7 @@ upstream endpoint's loss detection machinery, by counting packets in this
 direction with the L bit equal to 1, as described in {{usage}}.
 
 
-# Using the Loss Bits for Passive Loss Measurement {#usage}
+# Using Loss Bits for Passive Loss Measurement {#usage}
 
 There are three sources of observable loss:
 
