@@ -153,7 +153,7 @@ A protocol containing Q and L bits can allow the sender to choose Q Period based
 on the expected amount of loss and reordering on the path (see
 {{upstreamloss}}). If the explicit value of the Q Period is not explicitly
 signaled by the protocol, the Q Period value MUST be at least 128 and be a power
-of 2. This requirement allows an Observer to infer the Q Period by obsering one
+of 2. This requirement allows an Observer to infer the Q Period by observing one
 period of the square signal. It also allows the Observer to identify flows that
 set the loss bits to arbitrary values (see {{ossification}}).
 
@@ -300,10 +300,10 @@ can report congestion before they are forced to drop packets, as described in
 {{ECN}}. When transport protocols keep ECN-Echo feedback under encryption, this
 signal cannot be observed by the network operators. When tasked with diagnosing
 network performance problems, knowledge of a congestion downstream of an
-observation point can be intrumental.
+observation point can be instrumental.
 
 If downstream congestion information is desired, this information can be
-signaled with an additinal bit.
+signaled with an additional bit.
 
 * E: The "ECN-Echo Event" bit is set to 0 or 1 according to the Unreported ECN
   Echo counter, as explained below in {{ecnbit}}.
@@ -372,7 +372,7 @@ subflows to the same device. A QUIC implementation would need to reset all
 counters when it changes the destination (IP address or UDP port) or the
 Connection ID used for outgoing packets. It would also need to avoid
 incrementing Unreported Loss counter for loss of packets sent to a different
-destinatoin or with a different Connection ID.
+destination or with a different Connection ID.
 
 
 # IANA Considerations
