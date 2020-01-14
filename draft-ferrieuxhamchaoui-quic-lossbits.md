@@ -398,7 +398,7 @@ loss signal -- a preferred way to share information per {{!RFC8558}}.
 {{QUIC-TRANSPORT}} allows changing Connection IDs in the middle of a QUIC
 connection to reduce the likelihood of a passive observer linking old and new
 subflows to the same device. Hence, a QUIC implementation would need to reset
-all counters when it changes a Connection ID used for outgoing packets.  It would
+all counters when it changes Connection ID used for outgoing packets.  It would
 also need to avoid incrementing Unreported Loss counter for loss of packets sent
 with a different Connection ID.
 
