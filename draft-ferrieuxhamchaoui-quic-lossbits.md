@@ -170,8 +170,8 @@ Loss Event bit is reporting the exact number of lost packets, whereas the Echo
 Loss bit in {{?RFC7713}} is reporting an approximate number of lost bytes.
 
 Observation points can estimate the end-to-end loss, as determined by the
-upstream endpoint's loss detection machinery, by counting packets in this
-direction with the L bit equal to 1, as described in {{usage}}.
+upstream endpoint, by counting packets in this direction with the L bit equal
+to 1, as described in {{usage}}.
 
 
 # Using the Loss Bits for Passive Loss Measurement {#usage}
