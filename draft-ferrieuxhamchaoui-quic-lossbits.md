@@ -190,8 +190,7 @@ There are three sources of observable loss:
 The upstream and downstream loss together constitute _end-to-end loss_
 ({{endtoendloss}}).
 
-The Q and L bits allow detection and measurement of the types of loss listed
-above.
+The Q and L bits allow detection and measurement of all these types of loss.
 
 
 ## End-To-End Loss    {#endtoendloss}
