@@ -117,7 +117,8 @@ packets with short headers.
 Each endpoint maintains appropriate counters independently and separately for
 each connection 4-tuple and destination Connection ID.  Whenever this
 specification refers to connections, it is referring to packets sharing the same
-4-tuple and destination Connection ID.
+4-tuple and destination Connection ID.  A "QUIC connection", however, refers to
+connections in the traditional QUIC sense.
 
 
 ## Setting the sQuare Signal Bit on Outgoing Packets {#squarebit}
@@ -298,7 +299,7 @@ the short packet header as loss bits if the peer sends loss_bits=1.
 When loss_bits is set to 1, the sender will use reserved bits as loss bits if
 the peer includes the loss_bits transport parameter.
 
-A client MUST NOT use remembered value of loss_bits for 0-RTT connection.
+A client MUST NOT use remembered value of loss_bits for 0-RTT connections.
 
 
 ## Short Packet Header  {#shortheader}
@@ -351,7 +352,7 @@ The loss bits are amenable to "greasing" described in {{GREASE}} and MUST be
 greased.  The greasing should be accomplished similarly to the Latency Spin bit
 greasing in {{QUIC-TRANSPORT}}.  Namely, implementations MUST NOT include
 loss_bits transport parameter for a random selection of at least one in every 16
-connections.
+QUIC connections.
 
 It is possible to observe packet reordering near the edge of the square signal.
 A middle box might observe the signal and try to fix packet reordering that it
@@ -394,12 +395,12 @@ sQuare signal one outgoing packet sooner.
 To minimize unintentional exposure of information, loss bits provide an explicit
 loss signal -- a preferred way to share information per {{!RFC8558}}.
 
-{{QUIC-TRANSPORT}} allows changing Connection IDs in the middle of a connection
-to reduce the likelihood of a passive observer linking old and new subflows to
-the same device. Hence, a QUIC implementation would need to reset all counters
-when it changes Connection ID used for outgoing packets.  It would also need to
-avoid incrementing Unreported Loss counter for loss of packets sent with a
-different Connection ID.
+{{QUIC-TRANSPORT}} allows changing Connection IDs in the middle of a QUIC
+connection to reduce the likelihood of a passive observer linking old and new
+subflows to the same device. Hence, a QUIC implementation would need to reset
+all counters when it changes a Connection ID used for outgoing packets.  It would
+also need to avoid incrementing Unreported Loss counter for loss of packets sent
+with a different Connection ID.
 
 Accurate loss information allows identification and correlation of network
 conditions upstream and downstream of the observer. This could be a powerful
@@ -410,9 +411,9 @@ controller response to network events, but loss information provides a clearer
 signal.
 
 Implementations MUST allow administrators of clients and servers to disable loss
-reporting either globally or on a per-connection basis.  Additionally, as
-described in {{ossification}}, loss reporting MUST be disabled for a certain
-fraction of all connections.
+reporting either globally or per QUIC connection.  Additionally, as described in
+{{ossification}}, loss reporting MUST be disabled for a certain fraction of all
+QUIC connections.
 
 
 # IANA Considerations
