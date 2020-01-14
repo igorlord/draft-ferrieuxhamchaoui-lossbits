@@ -200,9 +200,9 @@ The Loss Event bit allows an observer to calculate the end-to-end loss rate by
 counting packets with the L bit value of 0 and 1 for a given connection. The
 end-to-end loss rate is the fraction of packets with L=1.
 
-The simplifying assumption here is that upstream loss affects packets with L=0
-and L=1 equally. This may be a simplification, if some loss is caused by
-tail-drop in a network device. If the sender congestion controller reduces the
+The assumption here is that upstream loss affects packets with L=0 and L=1
+equally.  If some loss is caused by tail-drop in a network device, this may
+be a simplification.  If the sender congestion controller reduces the
 packet send rate after loss, there may be a sufficient delay before sending
 packets with L=1 that they have a greater chance of arriving at the observer.
 
