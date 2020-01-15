@@ -57,6 +57,7 @@ normative:
 informative:
   GREASE: I-D.ietf-tls-grease
   DATAGRAM: I-D.pauly-quic-datagram
+  LOSSBITS: I-D.ferrieuxhamchaoui-tsvwg-lossbits
 
 --- abstract
 
@@ -429,6 +430,24 @@ Parameter Name: loss_bits
 Specification: Indicates that the endpoint supports loss bits. An endpoint that
    advertises this transport parameter can receive loss bits. An endpoint that
    advertises this transport parameter with value 1 can also send loss bits.
+
+
+# Change Log
+
+## Since version 02
+
+* Add QUIC v1 negotiation using transport parameter, use short header reserved
+  bits as loss bits, header protection change, IANA Considerations
+* Add Optimistic ACK Attack Defense to Security Considerations
+* Expand Privacy Considerations
+* Clarify Q run length selection
+
+
+## Since version 01
+* Add reference to RFC7713
+
+## Since version 00
+* Rewrote to base this draft on {{LOSSBITS}}
 
 
 # Acknowledgments
