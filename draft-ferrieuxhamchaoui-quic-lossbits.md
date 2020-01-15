@@ -426,7 +426,9 @@ Value: 0x1057 (if this document is approved)
 
 Parameter Name: loss_bits
 
-Specification: ..............
+Specification: Indicates that the endpoint supports loss bits. An endpoint that
+   advertises this transport parameter can receive loss bits. An endpoint that
+   advertises this transport parameter with value 1 can also send loss bits.
 
 
 # Acknowledgments
