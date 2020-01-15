@@ -436,8 +436,8 @@ Specification: Indicates that the endpoint supports loss bits. An endpoint that
 
 ## Since version 02
 
-* Add QUIC v1 negotiation: transport parameter, header protection change, IANA
-  Considerations
+* Add QUIC v1 negotiation using transport parameter, use short header reserved
+  bits as loss bits, header protection change, IANA Considerations
 * Add Optimistic ACK Attack Defense to Security Considerations
 * Expand Privacy Considerations
 * Clarify Q run length selection
