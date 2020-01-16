@@ -62,7 +62,7 @@ informative:
 --- abstract
 
 This draft adapts the general technique described in
-{{LOSSBITS}} for QUIC using reserved bits in QUIC v1
+draft-ferrieuxhamchaoui-tsvwg-lossbits for QUIC using reserved bits in QUIC v1
 short header.  It describes a method that employs two bits to allow endpoints to
 signal packet loss in a way that can be used by network devices to measure and
 locate the source of the loss. It further describes a way to negotiate this
