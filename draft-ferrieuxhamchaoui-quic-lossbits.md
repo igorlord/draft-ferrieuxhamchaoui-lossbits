@@ -61,13 +61,13 @@ informative:
 
 --- abstract
 
-This draft adapts the general technique described in
-draft-ferrieuxhamchaoui-tsvwg-lossbits for QUIC using reserved bits in QUIC v1
-short header.  It describes a method that employs two bits to allow endpoints to
-signal packet loss in a way that can be used by network devices to measure and
-locate the source of the loss. It further describes a way to negotiate this
-functionality as an extension in QUIC v1.
+This document defines an extension to the QUIC transport protocol to allow
+endpoints to signal packet loss in a way that can be used by network devices to
+measure and locate the source of the loss.
 
+Discussion of this work is encouraged to happen on the QUIC IETF mailing list
+<quic@ietf.org> or on the GitHub repository which contains the draft:
+<https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits>.
 
 --- middle
 
@@ -95,6 +95,9 @@ directly.
 Since explicit path signals are preferred by {{!RFC8558}}, two explicit loss
 bits in the clear portion of short headers are used to signal packet loss to
 on-path network devices.
+
+This draft adapts the general technique described in {{LOSSBITS}} for QUIC using
+reserved bits in QUIC v1 short header.
 
 # Notational Conventions    {#conventions}
 

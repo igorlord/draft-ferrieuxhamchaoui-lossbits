@@ -19,7 +19,12 @@ subject to a Simplified BSD License) in Contributions.
 
 ## Other Resources
 
-Discussion of this work occurs on the
+Discussion of the QUIC version of the draft occurs on the
+[QUIC working group mailing list](https://mailarchive.ietf.org/arch/browse/quic/)
+([subscribe](https://www.ietf.org/mailman/listinfo/quic)).  In addition to
+contributions in GitHub, you are encouraged to participate in discussions there.
+
+Discussion of the TSVWG version of the draft occurs on the
 [tsvwg working group mailing list](https://mailarchive.ietf.org/arch/browse/tsvwg/)
 ([subscribe](https://www.ietf.org/mailman/listinfo/tsvwg)).  In addition to
 contributions in GitHub, you are encouraged to participate in discussions there.
@@ -28,4 +33,5 @@ contributions in GitHub, you are encouraged to participate in discussions there.
 technical issues needs to occur on the mailing list.
 
 You might also like to familiarize yourself with other
-[working group documents](https://datatracker.ietf.org/wg/tsvwg/documents/).
+[QUIC working group documents](https://datatracker.ietf.org/wg/quic/documents/) and
+[tsvwg working group documents](https://datatracker.ietf.org/wg/tsvwg/documents/).
