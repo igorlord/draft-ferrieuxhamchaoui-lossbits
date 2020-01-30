@@ -1,5 +1,5 @@
 ---
-title: Packet Loss Signaling for Encrypted Protocols
+title: Packet Loss Signaling for QUIC
 abbrev: loss-bits
 docname: draft-ferrieuxhamchaoui-quic-lossbits-latest
 date: {DATE}
