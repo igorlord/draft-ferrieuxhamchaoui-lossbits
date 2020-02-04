@@ -96,8 +96,8 @@ directly.
 
 ## On-path loss observation
 
-There are three sources of observable loss that network operators need to 
-guarantee high QoS : 
+There are three sources of loss that network operators need to observe
+to guarantee high QoS : 
 
 * _upstream loss_ - loss between the sender and the observation point
   ({{upstreamloss}})
