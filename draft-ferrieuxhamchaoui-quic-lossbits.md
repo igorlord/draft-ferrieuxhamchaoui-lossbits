@@ -119,14 +119,11 @@ on-path network devices. This approach follows the recommandations of
 {{!RFC8558}} where it is mentionned that explicit path signals are preferred. 
 
 The current document adapts the technique proposed in {{LOSSBITS}} for QUIC
-by using reserved bits in QUIC v1 short header: 
-
-* Q: The "sQuare signal" bit that is toggled every N outgoing packets so that 
-
-* L: The "Loss event" bit 
+by using reserved bits in QUIC v1 short header the "sQuare signal" bit (Q)
+and the "Loss event" bit (L).
 
 While the exploitation of only Q can help in measuring the _upstream loss_ 
-and only I can help in measuring the _end-to-end loss_, both are conjointly 
+and only L can help in measuring the _end-to-end loss_, both are conjointly 
 required to detect and measure the other types of losses (_downstream loss_ 
 and _observer loss_).
 
