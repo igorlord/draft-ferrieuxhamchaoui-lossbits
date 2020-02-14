@@ -115,15 +115,14 @@ The upstream and downstream loss together constitute _end-to-end loss_
 
 {{LOSSBITS}} presents the generic technique. Two explicit loss
 bits in the clear portion of short headers are used to signal packet loss to
-on-path network devices. This approach follows the recommandations of 
-{{!RFC8558}} where it is mentionned that explicit path signals are preferred. 
-
+on-path network devices. The explicit loss bits are the "sQuare signal" bit (Q)
+and the "Loss event" bit (L). This approach follows the recommendations of 
+{{!RFC8558}} where it is mentioned that explicit path signals are preferred. 
 The current document adapts the technique proposed in {{LOSSBITS}} for QUIC
-by using reserved bits in QUIC v1 short header the "sQuare signal" bit (Q)
-and the "Loss event" bit (L).
+by using reserved bits in QUIC v1 short header.
 
 While the exploitation of only Q can help in measuring the _upstream loss_ 
-and only L can help in measuring the _end-to-end loss_, both are conjointly 
+and only L can help in measuring the _end-to-end loss_, both are  
 required to detect and measure the other types of losses (_downstream loss_ 
 and _observer loss_).
 
