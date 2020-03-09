@@ -73,6 +73,8 @@ Discussion of this work is encouraged to happen on the QUIC IETF mailing list
 
 # Introduction
 
+## Motivation for passive on-path loss observation 
+
 Packet loss is a hard and pervasive problem of day-to-day network operation.
 Proactively detecting, measuring, and locating it is crucial to maintaining high
 QoS and timely resolution of crippling end-to-end throughput issues. To this
@@ -87,17 +89,42 @@ With QUIC, the equivalent transport headers are encrypted and passive packet
 loss observation is not possible, as described in {{TRANSPORT-ENCRYPT}}.
 
 Measuring TCP loss between similar endpoints cannot be relied upon to
-evaluate QUIC loss.  QUIC could be routed by the network differently and
+evaluate QUIC loss. QUIC could be routed by the network differently and
 the fraction of Internet traffic delivered using QUIC is increasing every
 year.  It is imperative to measure packet loss experienced by QUIC users
 directly.
 
-Since explicit path signals are preferred by {{!RFC8558}}, two explicit loss
-bits in the clear portion of short headers are used to signal packet loss to
-on-path network devices.
+## On-path loss observation
 
-This draft adapts the general technique described in {{LOSSBITS}} for QUIC using
-reserved bits in QUIC v1 short header.
+There are three sources of loss that network operators need to observe
+to guarantee high QoS : 
+
+* _upstream loss_ - loss between the sender and the observation point
+  ({{upstreamloss}})
+
+* _downstream loss_ - loss between the observation point and the destination
+  ({{downstreamloss}})
+
+* _observer loss_ - loss by the observer itself that does not cause downstream
+  loss ({{observerloss}})
+
+The upstream and downstream loss together constitute _end-to-end loss_
+({{endtoendloss}}).
+
+## How on-path loss observation can be achieved in QUIC v1
+
+{{LOSSBITS}} presents the generic technique. Two explicit loss
+bits in the clear portion of short headers are used to signal packet loss to
+on-path network devices. The explicit loss bits are the "sQuare signal" bit (Q)
+and the "Loss event" bit (L). This approach follows the recommendations of 
+{{!RFC8558}} where it is mentioned that explicit path signals are preferred. 
+The current document adapts the technique proposed in {{LOSSBITS}} for QUIC
+by using reserved bits in QUIC v1 short header.
+
+While the exploitation of only Q can help in measuring the _upstream loss_ 
+and only L can help in measuring the _end-to-end loss_, both are  
+required to detect and measure the other types of losses (_downstream loss_ 
+and _observer loss_).
 
 # Notational Conventions    {#conventions}
 
@@ -112,7 +139,7 @@ header.  Therefore, only loss of short header packets is reported using loss
 bits.  Whenever this specification refers to packets, it is referring only to
 packets with short headers.
 
-* Q: The "sQuare signal" bit is toggled every N outgoing packets as explained
+* Q: The "sQuare signal" bit is toggled every N outgoing packets, as explained
   below in {{squarebit}}.
 
 * L: The "Loss event" bit is set to 0 or 1 according to the Unreported Loss
@@ -123,7 +150,6 @@ each connection 4-tuple and Destination Connection ID.  Whenever this
 specification refers to connections, it is referring to packets sharing the same
 4-tuple and Destination Connection ID.  A "QUIC connection", however, refers to
 connections in the traditional QUIC sense.
-
 
 ## Setting the sQuare Signal Bit on Outgoing Packets {#squarebit}
 
@@ -183,22 +209,6 @@ to 1, as described in {{usage}}.
 
 
 # Using Loss Bits for Passive Loss Measurement {#usage}
-
-There are three sources of observable loss:
-
-* _upstream loss_ - loss between the sender and the observation point
-  ({{upstreamloss}})
-
-* _downstream loss_ - loss between the observation point and the destination
-  ({{downstreamloss}})
-
-* _observer loss_ - loss by the observer itself that does not cause downstream
-  loss ({{observerloss}})
-
-The upstream and downstream loss together constitute _end-to-end loss_
-({{endtoendloss}}).
-
-The Q and L bits allow detection and measurement of all these types of loss.
 
 
 ## End-To-End Loss    {#endtoendloss}
