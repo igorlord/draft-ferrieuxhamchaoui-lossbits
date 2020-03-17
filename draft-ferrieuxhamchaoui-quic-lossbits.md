@@ -73,7 +73,7 @@ Discussion of this work is encouraged to happen on the QUIC IETF mailing list
 
 # Introduction
 
-## Motivation for passive on-path loss observation 
+## Motivation for Passive On-Path Loss Observation
 
 Packet loss is a hard and pervasive problem of day-to-day network operation.
 Proactively detecting, measuring, and locating it is crucial to maintaining high
@@ -94,10 +94,10 @@ the fraction of Internet traffic delivered using QUIC is increasing every
 year.  It is imperative to measure packet loss experienced by QUIC users
 directly.
 
-## On-path loss observation
+## On-Path Loss Observation
 
 There are three sources of loss that network operators need to observe
-to guarantee high QoS : 
+to guarantee high QoS:
 
 * _upstream loss_ - loss between the sender and the observation point
   ({{upstreamloss}})
@@ -111,20 +111,28 @@ to guarantee high QoS :
 The upstream and downstream loss together constitute _end-to-end loss_
 ({{endtoendloss}}).
 
-## How on-path loss observation can be achieved in QUIC v1
+## On-Path Loss Signaling in QUIC v1
 
-{{LOSSBITS}} presents the generic technique. Two explicit loss
-bits in the clear portion of short headers are used to signal packet loss to
-on-path network devices. The explicit loss bits are the "sQuare signal" bit (Q)
-and the "Loss event" bit (L). This approach follows the recommendations of 
-{{!RFC8558}} where it is mentioned that explicit path signals are preferred. 
-The current document adapts the technique proposed in {{LOSSBITS}} for QUIC
-by using reserved bits in QUIC v1 short header.
+{{LOSSBITS}} presents the generic technique. Two explicit loss bits in the clear
+portion of QUIC v1 short headers are used to signal packet loss to on-path
+network devices. The explicit loss bits are the "sQuare signal" bit (Q) and the
+"Loss event" bit (L) (see {{squarebit}} and {{lossbit}}) . This approach follows
+the recommendations of {{!RFC8558}} that recommends explicit path signals.  The
+current document adapts the technique proposed in {{LOSSBITS}} for QUIC by using
+reserved bits in QUIC v1 short header.
 
-While the exploitation of only Q can help in measuring the _upstream loss_ 
-and only L can help in measuring the _end-to-end loss_, both are  
-required to detect and measure the other types of losses (_downstream loss_ 
-and _observer loss_).
+While the exploitation of only Q can help in measuring the _upstream loss_ and
+only L can help in measuring the _end-to-end loss_, both are required to detect
+and measure the other types of losses (_downstream loss_ and _observer loss_).
+
+## Recommended Use of the Signals
+
+The loss signal is not designed for use in automated control of the network in
+environments where loss bits are set by untrusted hosts, Instead, the signal is
+to be used for troubleshooting individual flows and for monitoring the network
+by aggregating information from multiple flows and raising operator alarms if
+aggregate statistics indicate a potential problem.
+
 
 # Notational Conventions    {#conventions}
 
