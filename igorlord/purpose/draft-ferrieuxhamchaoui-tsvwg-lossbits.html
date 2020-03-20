@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Packet Loss Signaling for Encrypted Protocols</title>
+<meta content="Alexandre Ferrieux" name="author">
+<meta content="Isabelle Hamchaoui" name="author">
+<meta content="Igor Lubashev" name="author">
+<meta content="
+       This document describes a protocol-independent method that employs two bits to
+allow endpoints to signal packet loss in a way that can be used by network
+devices to measure and locate the source of the loss. The signaling method
+applies to all protocols with a protocol-specific way to identify packet
+loss. The method is especially valuable when applied to protocols that encrypt
+transport header and do not allow an alternative method for loss detection. 
+    " name="description">
+<meta content="xml2rfc 2.40.1" name="generator">
+<meta content="Internet-Draft" name="keyword">
+<meta content="draft-ferrieuxhamchaoui-tsvwg-lossbits-latest" name="ietf.draft">
+<link href="draft-ferrieuxhamchaoui-tsvwg-lossbits.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@import url('https://martinthomson.github.io/i-d-template/fonts.css');
+
+html {
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --small-font-size: 14.5px;
+}
+body {
+  max-width: 624px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  font-family: "Cabin Condensed", sans-serif;
+  font-weight: 600;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+#title {
+  padding: 1em 0 0.2em;
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 26px;
+}
+h4, h5, h6 {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+}
+#abstract+p, #abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 18px;
+  line-height: 24px;
+}
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href].selfRef {
+  color: var(--text-color);
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px 'Oxygen Mono', monospace;
+}
+pre {
+  border: 1px solid var(--line-color);
+  line-height: 17px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+}
+@media screen {
+  pre {
+    display: inline-block;
+    overflow-x: auto;
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  pre + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+  table {
+    display: inline-block;
+    overflow-x: auto;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #eee;
+}
+tr:nth-child(2n) > td {
+  background-color: var(--background-color);
+}
+tr:nth-child(2n+1) > td {
+  background-color: var(--highlight-color);
+}
+thead+tbody tr:nth-child(2n) > td {
+  background-color: var(--highlight-color);
+}
+thead+tbody tr:nth-child(2n+1) > td {
+  background-color: var(--background-color);
+}
+table caption {
+  font-style: italic;
+  margin: 0.3em 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  visibility: hidden;
+  user-select: none;
+}
+a.pilcrow[href] { color: #ddd; }
+a.pilcrow[href]:hover { text-decoration: none; }
+@media screen {
+  :hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 8em;
+}
+#identifiers dt {
+  width: var(--identifier-width);
+  margin: 0;
+  clear: left;
+  float: left;
+  text-align: right;
+}
+#identifiers dd {
+  margin: 0 0 0 calc(1em + var(--identifier-width));
+  min-width: 5em;
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+#toc nav ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+#toc nav li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+#toc a.xref {
+  white-space: normal;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  .index ul ul {
+    column-count: 1;
+    column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 600px) {
+  #authors-addresses > section {
+    display: relative;
+    padding: 32px 0 0;
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #name-authors-addresses {
+    position: absolute;
+    top: 0px;
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #b76427;
+  background-color: rgba(249, 232, 105, 0.3);
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: rgba(249, 232, 105, 0.3);
+  border-radius: 3px;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 953px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc.active {
+      opacity: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 8px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active nav {
+    display: block;
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin-top: 2px;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 954px) {
+  body {
+    padding-right: 380px;
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  #toc nav > ul  {
+    margin-bottom: 2em;
+  }
+  #toc ul {
+    margin: 0 0 0 4px;
+    font-size: var(--small-font-size);
+  }
+  #toc ul p, #toc ul li {
+    margin: 2px 0;
+    line-height: 22px;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Changes introduced to fix issues found during implementation */
+
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin: 8px 0.5em 0;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 20em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  dd {
+    page-break-before: avoid;
+  }
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">loss-bits</td>
+<td class="right">March 2020</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Ferrieux, et al.</td>
+<td class="center">Expires 18 September 2020</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">TSVWG</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-ferrieuxhamchaoui-tsvwg-lossbits-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2020-03-17" class="published">17 March 2020</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Informational</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2020-09-18">18 September 2020</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">A. Ferrieux</div>
+<div class="org">Orange Labs</div>
+</div>
+<div class="author">
+      <div class="author-name">I. Hamchaoui</div>
+<div class="org">Orange Labs</div>
+</div>
+<div class="author">
+      <div class="author-name">I. Lubashev</div>
+<div class="org">Akamai Technologies</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Packet Loss Signaling for Encrypted Protocols</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This document describes a protocol-independent method that employs two bits to
+allow endpoints to signal packet loss in a way that can be used by network
+devices to measure and locate the source of the loss. The signaling method
+applies to all protocols with a protocol-specific way to identify packet
+loss. The method is especially valuable when applied to protocols that encrypt
+transport header and do not allow an alternative method for loss detection.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 18 September 2020.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2020 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Simplified BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Simplified BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a><a href="#section-toc.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-notational-conventions" class="xref">Notational Conventions</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-loss-bits" class="xref">Loss Bits</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-setting-the-square-bit-on-o" class="xref">Setting the sQuare Bit on Outgoing Packets</a><a href="#section-toc.1-1.3.2.1.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.3.2.1.2.1">
+                    <p id="section-toc.1-1.3.2.1.2.1.1"><a href="#section-3.1.1" class="xref">3.1.1</a>.  <a href="#name-q-period-selection" class="xref">Q Period Selection</a><a href="#section-toc.1-1.3.2.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-setting-the-loss-event-bit-" class="xref">Setting the Loss Event Bit on Outgoing Packets</a><a href="#section-toc.1-1.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-using-the-loss-bits-for-pas" class="xref">Using the Loss Bits for Passive Loss Measurement</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-end-to-end-loss" class="xref">End-To-End Loss</a><a href="#section-toc.1-1.4.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-upstream-loss" class="xref">Upstream Loss</a><a href="#section-toc.1-1.4.2.2.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-correlating-end-to-end-and-" class="xref">Correlating End-to-End and Upstream Loss</a><a href="#section-toc.1-1.4.2.3.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="xref">4.4</a>.  <a href="#name-downstream-loss" class="xref">Downstream Loss</a><a href="#section-toc.1-1.4.2.4.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.4.2.5">
+                <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="xref">4.5</a>.  <a href="#name-observer-loss" class="xref">Observer Loss</a><a href="#section-toc.1-1.4.2.5.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-ecn-echo-event-bit" class="xref">ECN-Echo Event Bit</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-setting-the-ecn-echo-event-" class="xref">Setting the ECN-Echo Event Bit on Outgoing Packets</a><a href="#section-toc.1-1.5.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-using-e-bit-for-passive-ecn" class="xref">Using E Bit for Passive ECN-Reported Congestion Measurement</a><a href="#section-toc.1-1.5.2.2.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-protocol-ossification-consi" class="xref">Protocol Ossification Considerations</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-privacy-considerations" class="xref">Privacy Considerations</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a><a href="#section-toc.1-1.9.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-change-log" class="xref">Change Log</a><a href="#section-toc.1-1.10.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="xref">10.1</a>.  <a href="#name-since-version-01" class="xref">Since version 01</a><a href="#section-toc.1-1.10.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="xref">10.2</a>.  <a href="#name-since-version-00" class="xref">Since version 00</a><a href="#section-toc.1-1.10.2.2.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="xref">11</a>. <a href="#name-acknowledgments" class="xref">Acknowledgments</a><a href="#section-toc.1-1.11.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="xref">12</a>. <a href="#name-references" class="xref">References</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
+<ul class="toc ulEmpty">
+<li class="toc ulEmpty" id="section-toc.1-1.12.2.1">
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="xref">12.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a><a href="#section-toc.1-1.12.2.1.1" class="pilcrow">¶</a></p>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.12.2.2">
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="xref">12.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a><a href="#section-toc.1-1.12.2.2.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</li>
+<li class="toc ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#section-appendix.a" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.13.1" class="pilcrow">¶</a></p>
+</li>
+</ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">Packet loss is a pervasive problem of day-to-day network operation, and
+proactively detecting, measuring, and locating it is crucial to maintaining high
+QoS and timely resolution of crippling end-to-end throughput issues. To this
+effect, in a TCP-dominated world, network operators have been heavily relying on
+information present in the clear in TCP headers: sequence and acknowledgment
+numbers and SACKs when enabled (see <span>[<a href="#RFC8517" class="xref">RFC8517</a>]</span>). These allow for quantitative
+estimation of packet loss by passive on-path observation, and the lossy segment
+(upstream or downstream from the observation point) can be quickly identified by
+moving the passive observer around.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">With encrypted protocols, the equivalent transport headers are encrypted and
+passive packet loss observation is not possible, as described in
+<span>[<a href="#TRANSPORT-ENCRYPT" class="xref">TRANSPORT-ENCRYPT</a>]</span>.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">Since encrypted protocols could be routed by the network differently, and the
+fraction of Internet traffic delivered using encrypted protocols is increasing
+every year, it is imperative to measure packet loss experienced by encrypted
+protocol users directly instead of relying on measuring TCP loss between similar
+endpoints.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">Following the recommendation in <span>[<a href="#RFC8558" class="xref">RFC8558</a>]</span> of making path signals explicit,
+this document proposes adding two explicit loss bits to the clear portion of the
+protocol headers to restore network operators' ability to maintain high QoS for
+users of encrypted protocols. These bits can be added to an unencrypted portion
+of a header belonging to any protocol layer, e.g. IP (see <span>[<a href="#IP" class="xref">IP</a>]</span>) and IPv6 (see
+<span>[<a href="#IPv6" class="xref">IPv6</a>]</span>) headers or extensions, UDP surplus space (see <span>[<a href="#UDP-OPTIONS" class="xref">UDP-OPTIONS</a>]</span> and
+<span>[<a href="#UDP-SURPLUS" class="xref">UDP-SURPLUS</a>]</span>), reserved bits in a QUIC v1 header (see <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>).<a href="#section-1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="conventions">
+<section id="section-2">
+      <h2 id="name-notational-conventions">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-notational-conventions" class="section-name selfRef">Notational Conventions</a>
+      </h2>
+<p id="section-2-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
+interpreted as described in <span>[<a href="#RFC2119" class="xref">RFC2119</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="loss-bits">
+<section id="section-3">
+      <h2 id="name-loss-bits">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-loss-bits" class="section-name selfRef">Loss Bits</a>
+      </h2>
+<p id="section-3-1">The proposal introduces two bits that are to be present in every packet capable
+of loss reporting. These are packets that include protocol headers with the loss
+bits. Only loss of packets capable of loss reporting is reported using loss
+bits.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">Whenever this specification refers to packets, it is referring only to packets
+capable of loss reporting.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-3-3.1">Q: The "sQuare signal" bit is toggled every N outgoing packets as explained
+below in <a href="#squarebit" class="xref">Section 3.1</a>.<a href="#section-3-3.1" class="pilcrow">¶</a>
+</li>
+<li id="section-3-3.2">L: The "Loss event" bit is set to 0 or 1 according to the Unreported Loss
+counter, as explained below in <a href="#lossbit" class="xref">Section 3.2</a>.<a href="#section-3-3.2" class="pilcrow">¶</a>
+</li>
+</ul>
+<p id="section-3-4">Each endpoint maintains appropriate counters independently and separately for
+each connection (each subflow for multipath connections).<a href="#section-3-4" class="pilcrow">¶</a></p>
+<div id="squarebit">
+<section id="section-3.1">
+        <h3 id="name-setting-the-square-bit-on-o">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-setting-the-square-bit-on-o" class="section-name selfRef">Setting the sQuare Bit on Outgoing Packets</a>
+        </h3>
+<p id="section-3.1-1">The sQuare Value is initialized to the Initial Q Value (0 or 1) and is reflected
+in the Q bit of every outgoing packet. The sQuare value is inverted after
+sending every N packets (Q Period is 2*N). The Q bit represents "packet color"
+as defined by <span>[<a href="#RFC8321" class="xref">RFC8321</a>]</span>.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">The choice of the Initial Q Value and Q Period is determined by the protocol
+containing Q and L bits. For example, the values can be protocol constants (e.g.
+"Initial Q Value" is 0, and "Q Period" is 128), or they can be set explicitly
+for each connection (e.g. "Initial Q Value" is whatever value the initial packet
+has, and "Q Period" is set per a dedicated TCP option on SYN and SYN/ACK), or
+they can be included with every packet (e.g. ConEx IPv6 Destination Option of
+<span>[<a href="#ConEx-IPv6" class="xref">ConEx-IPv6</a>]</span>).<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">Observation points can estimate the upstream losses by counting the number of
+packets during a half period of the square signal, as described in <a href="#usage" class="xref">Section 4</a>.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<div id="q-period-selection">
+<section id="section-3.1.1">
+          <h4 id="name-q-period-selection">
+<a href="#section-3.1.1" class="section-number selfRef">3.1.1. </a><a href="#name-q-period-selection" class="section-name selfRef">Q Period Selection</a>
+          </h4>
+<p id="section-3.1.1-1">A protocol containing Q and L bits can allow the sender to choose Q Period based
+on the expected amount of loss and reordering on the path (see
+<a href="#upstreamloss" class="xref">Section 4.2</a>). If the explicit value of the Q Period is not explicitly
+signaled by the protocol, the Q Period value MUST be at least 128 and be a power
+of 2. This requirement allows an Observer to infer the Q Period by observing one
+period of the square signal. It also allows the Observer to identify flows that
+set the loss bits to arbitrary values (see <a href="#ossification" class="xref">Section 6</a>).<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="lossbit">
+<section id="section-3.2">
+        <h3 id="name-setting-the-loss-event-bit-">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-setting-the-loss-event-bit-" class="section-name selfRef">Setting the Loss Event Bit on Outgoing Packets</a>
+        </h3>
+<p id="section-3.2-1">The Unreported Loss counter is initialized to 0, and L bit of every outgoing
+packet indicates whether the Unreported Loss counter is positive (L=1 if the
+counter is positive, and L=0 otherwise).  The value of the Unreported Loss
+counter is decremented every time a packet with L=1 is sent.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">The value of the Unreported Loss counter is incremented for every packet that
+the protocol declares lost, using whatever loss detection machinery the protocol
+employs. If the protocol is able to rescind the loss determination later, a
+positive Unreported Loss counter MAY be decremented due to the rescission, but
+it SHOULD NOT become negative.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">This loss signaling is similar to loss signaling in <span>[<a href="#ConEx" class="xref">ConEx</a>]</span>, except the Loss
+Event bit is reporting the exact number of lost packets, whereas Echo Loss bit
+in <span>[<a href="#ConEx" class="xref">ConEx</a>]</span> is reporting an approximate number of lost bytes.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">For protocols, such as TCP (<span>[<a href="#TCP" class="xref">TCP</a>]</span>), that allow network devices to change data
+segmentation, it is possible that only a part of the packet is lost. In these
+cases, the sender MUST increment Unreported Loss counter by the fraction of the
+packet data lost (so Unreported Loss counter may become negative when a packet
+with L=1 is sent after a partial packet has been lost).<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+<p id="section-3.2-5">Observation points can estimate the end-to-end loss, as determined by the
+upstream endpoint's loss detection machinery, by counting packets in this
+direction with a L bit equal to 1, as described in <a href="#usage" class="xref">Section 4</a>.<a href="#section-3.2-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="usage">
+<section id="section-4">
+      <h2 id="name-using-the-loss-bits-for-pas">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-using-the-loss-bits-for-pas" class="section-name selfRef">Using the Loss Bits for Passive Loss Measurement</a>
+      </h2>
+<p id="section-4-1">There are three sources of observable loss:<a href="#section-4-1" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-4-2.1">
+          <em>upstream loss</em> - loss between the sender and the observation point
+(<a href="#upstreamloss" class="xref">Section 4.2</a>)<a href="#section-4-2.1" class="pilcrow">¶</a>
+</li>
+<li id="section-4-2.2">
+          <em>downstream loss</em> - loss between the observation point and the destination
+(<a href="#downstreamloss" class="xref">Section 4.4</a>)<a href="#section-4-2.2" class="pilcrow">¶</a>
+</li>
+<li id="section-4-2.3">
+          <em>observer loss</em> - loss by the observer itself that does not cause downstream
+loss (<a href="#observerloss" class="xref">Section 4.5</a>)<a href="#section-4-2.3" class="pilcrow">¶</a>
+</li>
+</ul>
+<p id="section-4-3">The upstream and downstream loss together constitute <em>end-to-end loss</em>
+(<a href="#endtoendloss" class="xref">Section 4.1</a>).<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">The Q and L bits allow detection and measurement of the types of loss listed
+above.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<div id="endtoendloss">
+<section id="section-4.1">
+        <h3 id="name-end-to-end-loss">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-end-to-end-loss" class="section-name selfRef">End-To-End Loss</a>
+        </h3>
+<p id="section-4.1-1">The Loss Event bit allows an observer to calculate the end-to-end loss rate by
+counting packets with L bit value of 0 and 1 for a given connection. The
+end-to-end loss rate is the fraction of packets with L=1.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">The simplifying assumption here is that upstream loss affects packets with L=0
+and L=1 equally. This may be a simplification, if some loss is caused by
+tail-drop in a network device. If the sender congestion controller reduces the
+packet send rate after loss, there may be a sufficient delay before sending
+packets with L=1 that they have a greater chance of arriving at the observer.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="upstreamloss">
+<section id="section-4.2">
+        <h3 id="name-upstream-loss">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-upstream-loss" class="section-name selfRef">Upstream Loss</a>
+        </h3>
+<p id="section-4.2-1">Blocks of N (half of Q Period) consecutive packets are sent with the same value
+of the Q bit, followed by another block of N packets with inverted value of the
+Q bit. Hence, knowing the value of N, an on-path observer can estimate the
+amount of upstream loss after observing at least N packets. If <code>p</code> is the
+average number of packets in a block of packets with the same Q value, then the
+upstream loss is <code>1-p/N</code>.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">The observer needs to be able to tolerate packet reordering that can blur the
+edges of the square signal.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">The Q Period needs to be chosen carefully, since the observation could become
+too unreliable in case of packet reordering and loss if Q Period is too
+small. However, when Q Period is too large, connections that send fewer than
+half Q Period packets do not yield a useful upstream loss measurement.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">The observer needs to differentiate packets as belonging to different
+connections, since they use independent counters.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="losscorrelation">
+<section id="section-4.3">
+        <h3 id="name-correlating-end-to-end-and-">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-correlating-end-to-end-and-" class="section-name selfRef">Correlating End-to-End and Upstream Loss</a>
+        </h3>
+<p id="section-4.3-1">Upstream loss is calculated by observing the actual packets that did not suffer
+the upstream loss. End-to-end loss, however, is calculated by observing
+subsequent packets after the sender's protocol detected the loss.  Hence,
+end-to-end loss is generally observed with a delay of between 1 RTT (loss
+declared due to multiple duplicate acknowledgments) and 1 RTO (loss declared due
+to a timeout) relative to the upstream loss.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">The connection RTT can sometimes be estimated by timing protocol handshake
+messages. This RTT estimate can be greatly improved by observing a dedicated
+protocol mechanism for conveying RTT information, such as the Latency Spin bit
+of <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">Whenever the observer needs to perform a computation that uses both upstream and
+end-to-end loss rate measurements, it SHOULD use upstream loss rate leading the
+end-to-end loss rate by approximately 1 RTT. If the observer is unable to
+estimate RTT of the connection, it should accumulate loss measurements over time
+periods of at least 4 times the typical RTT for the observed connections.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">If the calculated upstream loss rate exceeds the end-to-end loss rate calculated
+in <a href="#endtoendloss" class="xref">Section 4.1</a>, then either the Q Period is too short for the amount of
+packet reordering or there is observer loss, described in <a href="#observerloss" class="xref">Section 4.5</a>. If
+this happens, the observer SHOULD adjust the calculated upstream loss rate to
+match end-to-end loss rate.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="downstreamloss">
+<section id="section-4.4">
+        <h3 id="name-downstream-loss">
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-downstream-loss" class="section-name selfRef">Downstream Loss</a>
+        </h3>
+<p id="section-4.4-1">Because downstream loss affects only those packets that did not suffer upstream
+loss, the end-to-end loss rate (<code>e</code>) relates to the upstream loss rate (<code>u</code>) and
+downstream loss rate (<code>d</code>) as <code>(1-u)(1-d)=1-e</code>. Hence, <code>d=(e-u)/(1-u)</code>.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="observerloss">
+<section id="section-4.5">
+        <h3 id="name-observer-loss">
+<a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-observer-loss" class="section-name selfRef">Observer Loss</a>
+        </h3>
+<p id="section-4.5-1">A typical deployment of a passive observation system includes a network tap
+device that mirrors network packets of interest to a device that performs
+analysis and measurement on the mirrored packets. The observer loss is the loss
+that occurs on the mirror path.<a href="#section-4.5-1" class="pilcrow">¶</a></p>
+<p id="section-4.5-2">Observer loss affects upstream loss rate measurement since it causes the
+observer to account for fewer packets in a block of identical Q bit values (see
+{{upstreamloss)}). The end-to-end loss rate measurement, however, is unaffected
+by the observer loss, since it is a measurement of the fraction of packets with
+the set L bit value, and the observer loss would affect all packets equally
+(see <a href="#endtoendloss" class="xref">Section 4.1</a>).<a href="#section-4.5-2" class="pilcrow">¶</a></p>
+<p id="section-4.5-3">The need to adjust the upstream loss rate down to match end-to-end loss rate as
+described in <a href="#losscorrelation" class="xref">Section 4.3</a> is a strong indication of the observer loss,
+whose magnitude is between the amount of such adjustment and the entirety of the
+upstream loss measured in <a href="#upstreamloss" class="xref">Section 4.2</a>.<a href="#section-4.5-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="ecn-echo">
+<section id="section-5">
+      <h2 id="name-ecn-echo-event-bit">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-ecn-echo-event-bit" class="section-name selfRef">ECN-Echo Event Bit</a>
+      </h2>
+<p id="section-5-1">While the primary focus of the draft is on exposing packet loss, modern networks
+can report congestion before they are forced to drop packets, as described in
+<span>[<a href="#ECN" class="xref">ECN</a>]</span>. When transport protocols keep ECN-Echo feedback under encryption, this
+signal cannot be observed by the network operators. When tasked with diagnosing
+network performance problems, knowledge of a congestion downstream of an
+observation point can be instrumental.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">If downstream congestion information is desired, this information can be
+signaled with an additional bit.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<ul>
+<li id="section-5-3.1">E: The "ECN-Echo Event" bit is set to 0 or 1 according to the Unreported ECN
+Echo counter, as explained below in <a href="#ecnbit" class="xref">Section 5.1</a>.<a href="#section-5-3.1" class="pilcrow">¶</a>
+</li>
+</ul>
+<div id="ecnbit">
+<section id="section-5.1">
+        <h3 id="name-setting-the-ecn-echo-event-">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-setting-the-ecn-echo-event-" class="section-name selfRef">Setting the ECN-Echo Event Bit on Outgoing Packets</a>
+        </h3>
+<p id="section-5.1-1">The Unreported ECN-Echo counter operates identicaly to Unreported Loss counter
+(<a href="#lossbit" class="xref">Section 3.2</a>), except it counts packets delivered by the network with CE
+markings, according to the ECN-Echo feedback from the receiver.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">This ECN-Echo signaling is similar to ECN signaling in <span>[<a href="#ConEx" class="xref">ConEx</a>]</span>. ECN-Echo
+mechanism in QUIC provides the number of packets received with CE marks. For
+protocols like TCP, the method described in <span>[<a href="#ConEx-TCP" class="xref">ConEx-TCP</a>]</span> can be employed. As
+stated in <span>[<a href="#ConEx-TCP" class="xref">ConEx-TCP</a>]</span>, such feedback can be further improved using a method
+described in <span>[<a href="#ACCURATE" class="xref">ACCURATE</a>]</span>.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="ech-usage">
+<section id="section-5.2">
+        <h3 id="name-using-e-bit-for-passive-ecn">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-using-e-bit-for-passive-ecn" class="section-name selfRef">Using E Bit for Passive ECN-Reported Congestion Measurement</a>
+        </h3>
+<p id="section-5.2-1">A network observer can count packets with CE codepoint and determine the
+upstream CE-marking rate directly.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">Observation points can also estimate ECN-reported end-to-end congestion by
+counting packets in this direction with a E bit equal to 1.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">The upstream CE-marking rate and end-to-end ECN-reported congestion can provide
+information about downstream CE-marking rate. Presence of E bits along with L
+bits, however, can somewhat confound precise estimates of upstream and
+downstream CE-markings in case the flow contains packets that are not
+ECN-capable.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="ossification">
+<section id="section-6">
+      <h2 id="name-protocol-ossification-consi">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-protocol-ossification-consi" class="section-name selfRef">Protocol Ossification Considerations</a>
+      </h2>
+<p id="section-6-1">Accurate loss information is not critical to the operation of any protocol,
+though its presence for a sufficient number of connections is important for the
+operation of the networks.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">The loss bits are amenable to "greasing" described in <span>[<a href="#GREASE" class="xref">GREASE</a>]</span>, if the
+protocol designers are not ready to dedicate (and ossify) bits used for loss
+reporting to this function. The greasing could be accomplished similarly to the
+Latency Spin bit greasing in <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span>. Namely, implementations could
+decide that a fraction of connections should not encode loss information in the
+loss bits and, instead, the bits would be set to arbitrary values. The observers
+would need to be ready to ignore connections with loss information more
+resembling noise than the expected signal.<a href="#section-6-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-7">
+      <h2 id="name-security-considerations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-7-1">Passive loss observation has been a part of the network operations for a long
+time, so exposing loss information to the network does not add new security
+concerns.<a href="#section-7-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="privacy-considerations">
+<section id="section-8">
+      <h2 id="name-privacy-considerations">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-privacy-considerations" class="section-name selfRef">Privacy Considerations</a>
+      </h2>
+<p id="section-8-1">Guarding user's privacy is an important goal for modern protocols and protocol
+extensions per <span>[<a href="#RFC7258" class="xref">RFC7258</a>]</span>.  While an explicit loss signal - a preferred way to
+share loss information per <span>[<a href="#RFC8558" class="xref">RFC8558</a>]</span> - helps to minimize unintentional
+exposure of additional information, implementations of loss reporting must
+ensure that loss information does not compromise protocol's privacy goals.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">For example, <span>[<a href="#QUIC-TRANSPORT" class="xref">QUIC-TRANSPORT</a>]</span> allows changing Connection IDs in the middle of
+a connection to reduce the likelihood of a passive observer linking old and new
+subflows to the same device. A QUIC implementation would need to reset all
+counters when it changes the destination (IP address or UDP port) or the
+Connection ID used for outgoing packets. It would also need to avoid
+incrementing Unreported Loss counter for loss of packets sent to a different
+destination or with a different Connection ID.<a href="#section-8-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-9">
+      <h2 id="name-iana-considerations">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<p id="section-9-1">This document makes no request of IANA.<a href="#section-9-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="change-log">
+<section id="section-10">
+      <h2 id="name-change-log">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-change-log" class="section-name selfRef">Change Log</a>
+      </h2>
+<div id="since-version-01">
+<section id="section-10.1">
+        <h3 id="name-since-version-01">
+<a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-since-version-01" class="section-name selfRef">Since version 01</a>
+        </h3>
+<ul>
+<li id="section-10.1-1.1">Clarified Q Period selection<a href="#section-10.1-1.1" class="pilcrow">¶</a>
+</li>
+<li id="section-10.1-1.2">Added an optional E (ECN-Echo Event) bit<a href="#section-10.1-1.2" class="pilcrow">¶</a>
+</li>
+<li id="section-10.1-1.3">Clarified L bit calculation for protocols that allow partial data loss due to
+a change in segmentation (such as TCP)<a href="#section-10.1-1.3" class="pilcrow">¶</a>
+</li>
+</ul>
+</section>
+</div>
+<div id="since-version-00">
+<section id="section-10.2">
+        <h3 id="name-since-version-00">
+<a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-since-version-00" class="section-name selfRef">Since version 00</a>
+        </h3>
+<ul>
+<li id="section-10.2-1.1">Addressed review comments<a href="#section-10.2-1.1" class="pilcrow">¶</a>
+</li>
+<li id="section-10.2-1.2">Improved guidelines for privacy protections for QIUC<a href="#section-10.2-1.2" class="pilcrow">¶</a>
+</li>
+</ul>
+</section>
+</div>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="section-11">
+      <h2 id="name-acknowledgments">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="section-11-1">The sQuare bit was originally suggested by Kazuho Oku in early proposals for
+loss measurement and is an instance of the "alternate marking" as defined in
+<span>[<a href="#RFC8321" class="xref">RFC8321</a>]</span>.<a href="#section-11-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-12">
+      <h2 id="name-references">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<section id="section-12.1">
+        <h3 id="name-normative-references">
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="ConEx">[ConEx]</dt>
+<dd>
+<span class="refAuthor">Mathis, M.</span><span class="refAuthor"> and B. Briscoe</span>, <span class="refTitle">"Congestion Exposure (ConEx) Concepts, Abstract Mechanism, and Requirements"</span>, <span class="seriesInfo">RFC 7713</span>, <span class="seriesInfo">DOI 10.17487/RFC7713</span>, <time datetime="2015-12">December 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7713">https://www.rfc-editor.org/info/rfc7713</a>&gt;</span>. </dd>
+<dt id="ConEx-IPv6">[ConEx-IPv6]</dt>
+<dd>
+<span class="refAuthor">Krishnan, S.</span><span class="refAuthor">, Kuehlewind, M.</span><span class="refAuthor">, Briscoe, B.</span><span class="refAuthor">, and C. Ralli</span>, <span class="refTitle">"IPv6 Destination Option for Congestion Exposure (ConEx)"</span>, <span class="seriesInfo">RFC 7837</span>, <span class="seriesInfo">DOI 10.17487/RFC7837</span>, <time datetime="2016-05">May 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7837">https://www.rfc-editor.org/info/rfc7837</a>&gt;</span>. </dd>
+<dt id="ConEx-TCP">[ConEx-TCP]</dt>
+<dd>
+<span class="refAuthor">Kuehlewind, M., Ed.</span><span class="refAuthor"> and R. Scheffenegger</span>, <span class="refTitle">"TCP Modifications for Congestion Exposure (ConEx)"</span>, <span class="seriesInfo">RFC 7786</span>, <span class="seriesInfo">DOI 10.17487/RFC7786</span>, <time datetime="2016-05">May 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7786">https://www.rfc-editor.org/info/rfc7786</a>&gt;</span>. </dd>
+<dt id="ECN">[ECN]</dt>
+<dd>
+<span class="refAuthor">Ramakrishnan, K.</span><span class="refAuthor">, Floyd, S.</span><span class="refAuthor">, and D. Black</span>, <span class="refTitle">"The Addition of Explicit Congestion Notification (ECN) to IP"</span>, <span class="seriesInfo">RFC 3168</span>, <span class="seriesInfo">DOI 10.17487/RFC3168</span>, <time datetime="2001-09">September 2001</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc3168">https://www.rfc-editor.org/info/rfc3168</a>&gt;</span>. </dd>
+<dt id="IP">[IP]</dt>
+<dd>
+<span class="refAuthor">Postel, J.</span>, <span class="refTitle">"Internet Protocol"</span>, <span class="seriesInfo">STD 5</span>, <span class="seriesInfo">RFC 791</span>, <span class="seriesInfo">DOI 10.17487/RFC0791</span>, <time datetime="1981-09">September 1981</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc791">https://www.rfc-editor.org/info/rfc791</a>&gt;</span>. </dd>
+<dt id="IPv6">[IPv6]</dt>
+<dd>
+<span class="refAuthor">Deering, S.</span><span class="refAuthor"> and R. Hinden</span>, <span class="refTitle">"Internet Protocol, Version 6 (IPv6) Specification"</span>, <span class="seriesInfo">STD 86</span>, <span class="seriesInfo">RFC 8200</span>, <span class="seriesInfo">DOI 10.17487/RFC8200</span>, <time datetime="2017-07">July 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8200">https://www.rfc-editor.org/info/rfc8200</a>&gt;</span>. </dd>
+<dt id="RFC2119">[RFC2119]</dt>
+<dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dt id="RFC8321">[RFC8321]</dt>
+<dd>
+<span class="refAuthor">Fioccola, G., Ed.</span><span class="refAuthor">, Capello, A.</span><span class="refAuthor">, Cociglio, M.</span><span class="refAuthor">, Castaldelli, L.</span><span class="refAuthor">, Chen, M.</span><span class="refAuthor">, Zheng, L.</span><span class="refAuthor">, Mirsky, G.</span><span class="refAuthor">, and T. Mizrahi</span>, <span class="refTitle">"Alternate-Marking Method for Passive and Hybrid Performance Monitoring"</span>, <span class="seriesInfo">RFC 8321</span>, <span class="seriesInfo">DOI 10.17487/RFC8321</span>, <time datetime="2018-01">January 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8321">https://www.rfc-editor.org/info/rfc8321</a>&gt;</span>. </dd>
+<dt id="RFC8558">[RFC8558]</dt>
+<dd>
+<span class="refAuthor">Hardie, T., Ed.</span>, <span class="refTitle">"Transport Protocol Path Signals"</span>, <span class="seriesInfo">RFC 8558</span>, <span class="seriesInfo">DOI 10.17487/RFC8558</span>, <time datetime="2019-04">April 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8558">https://www.rfc-editor.org/info/rfc8558</a>&gt;</span>. </dd>
+<dt id="TCP">[TCP]</dt>
+<dd>
+<span class="refAuthor">Postel, J.</span>, <span class="refTitle">"Transmission Control Protocol"</span>, <span class="seriesInfo">STD 7</span>, <span class="seriesInfo">RFC 793</span>, <span class="seriesInfo">DOI 10.17487/RFC0793</span>, <time datetime="1981-09">September 1981</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc793">https://www.rfc-editor.org/info/rfc793</a>&gt;</span>. </dd>
+</dl>
+</section>
+<section id="section-12.2">
+        <h3 id="name-informative-references">
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="ACCURATE">[ACCURATE]</dt>
+<dd>
+<span class="refAuthor">Briscoe, B.</span><span class="refAuthor">, Kuehlewind, M.</span><span class="refAuthor">, and R. Scheffenegger</span>, <span class="refTitle">"More Accurate ECN Feedback in TCP"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tcpm-accurate-ecn-11</span>, <time datetime="2020-03-05">5 March 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-tcpm-accurate-ecn-11.txt">http://www.ietf.org/internet-drafts/draft-ietf-tcpm-accurate-ecn-11.txt</a>&gt;</span>. </dd>
+<dt id="GREASE">[GREASE]</dt>
+<dd>
+<span class="refAuthor">Benjamin, D.</span>, <span class="refTitle">"Applying GREASE to TLS Extensibility"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-grease-04</span>, <time datetime="2019-08-22">22 August 2019</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-tls-grease-04.txt">http://www.ietf.org/internet-drafts/draft-ietf-tls-grease-04.txt</a>&gt;</span>. </dd>
+<dt id="QUIC-TRANSPORT">[QUIC-TRANSPORT]</dt>
+<dd>
+<span class="refAuthor">Iyengar, J.</span><span class="refAuthor"> and M. Thomson</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-quic-transport-27</span>, <time datetime="2020-02-21">21 February 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-quic-transport-27.txt">http://www.ietf.org/internet-drafts/draft-ietf-quic-transport-27.txt</a>&gt;</span>. </dd>
+<dt id="RFC7258">[RFC7258]</dt>
+<dd>
+<span class="refAuthor">Farrell, S.</span><span class="refAuthor"> and H. Tschofenig</span>, <span class="refTitle">"Pervasive Monitoring Is an Attack"</span>, <span class="seriesInfo">BCP 188</span>, <span class="seriesInfo">RFC 7258</span>, <span class="seriesInfo">DOI 10.17487/RFC7258</span>, <time datetime="2014-05">May 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7258">https://www.rfc-editor.org/info/rfc7258</a>&gt;</span>. </dd>
+<dt id="RFC8517">[RFC8517]</dt>
+<dd>
+<span class="refAuthor">Dolson, D., Ed.</span><span class="refAuthor">, Snellman, J.</span><span class="refAuthor">, Boucadair, M., Ed.</span><span class="refAuthor">, and C. Jacquenet</span>, <span class="refTitle">"An Inventory of Transport-Centric Functions Provided by Middleboxes: An Operator Perspective"</span>, <span class="seriesInfo">RFC 8517</span>, <span class="seriesInfo">DOI 10.17487/RFC8517</span>, <time datetime="2019-02">February 2019</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8517">https://www.rfc-editor.org/info/rfc8517</a>&gt;</span>. </dd>
+<dt id="TRANSPORT-ENCRYPT">[TRANSPORT-ENCRYPT]</dt>
+<dd>
+<span class="refAuthor">Fairhurst, G.</span><span class="refAuthor"> and C. Perkins</span>, <span class="refTitle">"Considerations around Transport Header Confidentiality, Network Operations, and the Evolution of Internet Transport Protocols"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tsvwg-transport-encrypt-12</span>, <time datetime="2020-02-27">27 February 2020</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-tsvwg-transport-encrypt-12.txt">http://www.ietf.org/internet-drafts/draft-ietf-tsvwg-transport-encrypt-12.txt</a>&gt;</span>. </dd>
+<dt id="UDP-OPTIONS">[UDP-OPTIONS]</dt>
+<dd>
+<span class="refAuthor">Touch, J.</span>, <span class="refTitle">"Transport Options for UDP"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tsvwg-udp-options-08</span>, <time datetime="2019-09-12">12 September 2019</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-ietf-tsvwg-udp-options-08.txt">http://www.ietf.org/internet-drafts/draft-ietf-tsvwg-udp-options-08.txt</a>&gt;</span>. </dd>
+<dt id="UDP-SURPLUS">[UDP-SURPLUS]</dt>
+<dd>
+<span class="refAuthor">Herbert, T.</span>, <span class="refTitle">"UDP Surplus Header"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-herbert-udp-space-hdr-01</span>, <time datetime="2019-07-08">8 July 2019</time>, <span>&lt;<a href="http://www.ietf.org/internet-drafts/draft-herbert-udp-space-hdr-01.txt">http://www.ietf.org/internet-drafts/draft-herbert-udp-space-hdr-01.txt</a>&gt;</span>. </dd>
+</dl>
+</section>
+</section>
+<div id="authors-addresses">
+<section id="section-appendix.a">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Alexandre Ferrieux</span></div>
+<div dir="auto" class="left"><span class="org">Orange Labs</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:alexandre.ferrieux@orange.com" class="email">alexandre.ferrieux@orange.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Isabelle Hamchaoui</span></div>
+<div dir="auto" class="left"><span class="org">Orange Labs</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:isabelle.hamchaoui@orange.com" class="email">isabelle.hamchaoui@orange.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Igor Lubashev</span></div>
+<div dir="auto" class="left"><span class="org">Akamai Technologies</span></div>
+<div dir="auto" class="left"><span class="street-address">150 Broadway</span></div>
+<div dir="auto" class="left">
+<span class="locality">Cambridge</span>, <span class="region">MA</span> <span class="postal-code">1122</span>
+</div>
+<div dir="auto" class="left"><span class="country-name">United States of America</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:ilubashe@akamai.com" class="email">ilubashe@akamai.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>

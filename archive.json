@@ -1,0 +1,2139 @@
+{
+  "magic": "B8n2c@e8kvfx",
+  "timestamp": "2020-03-20T16:13:23.174560+00:00",
+  "repo": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 7,
+      "id": "MDU6SXNzdWU1NDc1NDY1MjI=",
+      "title": "Q-bit: little or no new information?",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/7",
+      "state": "CLOSED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "> For QUIC v1 connections, the attacker can examine offsets in STREAM frames to determine whether packet number skips are deliberate, so Q-bit signal provides little new information.\r\n\r\nWhy \"little\" instead of \"no?\"  AFAICT, the Q-bit provides no new information.",
+      "createdAt": "2020-01-09T15:24:36Z",
+      "updatedAt": "2020-01-10T21:53:40Z",
+      "closedAt": "2020-01-10T21:53:40Z",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "I was worried that someone will have some far-fetched objection to \"no\", which would lead a rat hole for the discussion.  For example, there may be cases when a lost packet had a STREAM frame for a new stream, so it would not be noticed.\r\n\r\nBut I may actually agree to \"no\", since what we care about is a signal that something has definitely been lost.  The example above only informs that something might be lost (but likely is a deliberate skip).",
+          "createdAt": "2020-01-09T18:49:24Z",
+          "updatedAt": "2020-01-09T18:49:24Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "My problem with the current phrasing, \"provides little new information,\" is that it leads the reader to ask \"*what* new information does the Q bit provide?\"  This is not covered in the draft.  I'd replace \"little\" with \"no\" for clarity.\r\n\r\nAnother way to handle this is to rephrase along these lines:\r\n\r\n> The information exposed by the square wave value with regard to artificial packet number gaps can be gleaned by other means.  For example, the attacker can analyze offsets in STREAM frames to detect holes.\r\n\r\nSince this discussion is in the context of an opt-ACK attack, which requests a large resource, this makes sense.",
+          "createdAt": "2020-01-09T19:05:01Z",
+          "updatedAt": "2020-01-09T19:05:01Z"
+        },
+        {
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In the same vein, but in the introductory paragraph of the same section, isn't the sentence \"_...does not provide any information that cannot be observed by simply counting packets_\" a bit of an overstatement ? Wouldn't the devil's advocate say something like \"Then why do you need it in the first place ?\" ?\r\n\r\nWhat about \"provides very little information over what can be gleaned from simply counting packets\" ?",
+          "createdAt": "2020-01-09T20:06:08Z",
+          "updatedAt": "2020-01-09T20:06:08Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Since this discussion is in the context of an opt-ACK attack, which requests a large resource, this makes sense.\r\n\r\nI take it back.  When thinking about this originally, I had HTTP/3 in mind specifically.  In HTTP/3, a large resource is delivered using a single stream.  Future application protocols that use QUIC may use multiple streams and so the \"look for STREAM holes\" is not applicable.  @igorlord's [comment above](https://github.com/igorlord/draft-ferrieuxhamchaoui-tsvwg-lossbits/issues/7#issuecomment-572699499) sort of touches on this.",
+          "createdAt": "2020-01-09T20:23:13Z",
+          "updatedAt": "2020-01-09T20:23:13Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "@dtikhonov, I think the key is whether the attacker is able to get the peer to send a single very large stream.  If so, the attacker has a reliable way to identify lost packets.  If not, it becomes harder for the attacker to replicate signal quality available from the Q bit.\r\n\r\n@ferrieux Your comment about the first sentence makes sense. I'll reword it.",
+          "createdAt": "2020-01-10T03:56:52Z",
+          "updatedAt": "2020-01-10T03:56:52Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Resolved via #12 ",
+          "createdAt": "2020-01-10T21:53:40Z",
+          "updatedAt": "2020-01-10T21:53:40Z"
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "id": "MDU6SXNzdWU1NDc1NTI0NzA=",
+      "title": "Including skipped packet number into Q run",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/8",
+      "state": "CLOSED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "> However, an endpoint that implements {{DATAGRAM}} and uses a loss-based congestion controller MAY include deliberately skipped packet numbers in the current Q run.\r\n\r\nThis is confusing.  What does it mean to include skipped packet numbers in the Q run?\r\n\r\nI suggest using a more explicit recommendation.  For example:\r\n\r\n> To make skipped packet numbers indistinguishable from packet loss, a sender MAY shorten the current Q run by the number of skipped packets.  For example, skipping a single packet number will invert the sQuare wave one outgoing packet sooner.",
+      "createdAt": "2020-01-09T15:33:53Z",
+      "updatedAt": "2020-01-10T21:53:49Z",
+      "closedAt": "2020-01-10T21:53:49Z",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "I like this. I do think this is still valuable to mention {{DATAGRAM}} and loss-based congestion controller.  (We can discuss this, of course).",
+          "createdAt": "2020-01-09T18:40:29Z",
+          "updatedAt": "2020-01-09T18:40:29Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think it's better if you made this change -- I think you have a better grasp of the concepts involved.",
+          "createdAt": "2020-01-09T18:54:21Z",
+          "updatedAt": "2020-01-09T18:54:21Z"
+        },
+        {
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Chiming in 4 days late, sorry: Isn't the sentence \"_...does not provide any information that cannot be observed by simply counting packets_\" a bit of an overstatement ? Wouldn't the devil's advocate say something like \"Then why do you need it in the first place ?\" ?\r\n\r\nWhat about \"provides very little information over what can be gleaned from simply counting packets\" ?",
+          "createdAt": "2020-01-09T19:41:14Z",
+          "updatedAt": "2020-01-09T19:41:14Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That's a good observation -- it deserves its own issue.",
+          "createdAt": "2020-01-09T19:47:29Z",
+          "updatedAt": "2020-01-09T19:47:29Z"
+        },
+        {
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh, right, wrong thread. I added it to the end of #7 , which seems to be better suited.",
+          "createdAt": "2020-01-09T20:07:30Z",
+          "updatedAt": "2020-01-09T20:07:30Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Resolved via #12 ",
+          "createdAt": "2020-01-10T21:53:49Z",
+          "updatedAt": "2020-01-10T21:53:49Z"
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "id": "MDU6SXNzdWU1NDc1NTUzNDc=",
+      "title": "Settle on the use of the definite article",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/9",
+      "state": "CLOSED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Sometimes the draft uses the definite article when taking about the Q and L bits (e.g. \"The Q-bit signal does not provide...\") and sometimes it does not (e.g \"To use Q-bit for this purpose\").\r\n\r\nWe should pick one way of doing it and stick with it.\r\n\r\nI am not a native speaker.  That being said, I believe in most places where \"the\" is omitted, it should be used.",
+      "createdAt": "2020-01-09T15:38:48Z",
+      "updatedAt": "2020-01-10T04:04:29Z",
+      "closedAt": "2020-01-10T04:04:29Z",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Omg.  This is my worst nightmare -- getting the articles right.  None of us are native speakers. LOL.\r\nI think you are right.  Could you fix this?\r\n\r\nI might show this to native speakers closer to when we are done and ask them to fix the articles.  I might use my kid for this. :)",
+          "createdAt": "2020-01-09T18:31:32Z",
+          "updatedAt": "2020-01-09T18:31:32Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'll make a PR and do my  best.\r\n\r\nUsing child labor is a good idea, +1.",
+          "createdAt": "2020-01-09T18:50:26Z",
+          "updatedAt": "2020-01-09T18:50:26Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Resolved in PR #13 ",
+          "createdAt": "2020-01-10T04:04:29Z",
+          "updatedAt": "2020-01-10T04:04:29Z"
+        }
+      ]
+    },
+    {
+      "number": 10,
+      "id": "MDU6SXNzdWU1NDc1NTg1NTg=",
+      "title": "Consistent use of dashes: Q-bit or Q bit?",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/10",
+      "state": "CLOSED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Let's settle on one way and make the draft consistent in this regard.\r\n\r\nMy preference would be _not_ to use the dash.",
+      "createdAt": "2020-01-09T15:44:05Z",
+      "updatedAt": "2020-01-13T18:56:44Z",
+      "closedAt": "2020-01-13T18:56:44Z",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "I am ok with that.\r\n\r\nA related issue is the use of \"QL bits\" vs \"loss bits\".  What's your take on that?",
+          "createdAt": "2020-01-09T18:29:39Z",
+          "updatedAt": "2020-01-09T18:29:39Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "One issue with the naming I've been having (in my code) regarding \"QL bits\" vs \"QL loss bits\" vs \"loss bits\" is that L is the loss bit and, at the same time, together they are loss bits.\r\n\r\nCertainly, the expression \"loss bits\" is a better name for the Draft.  (Compare with \"QL bits.\")  One way to approach this is to rename the L \"the **Loss** event bit\" to E \"the loss **Event** bit.  Then Q and E together will be the loss bits.\r\n\r\nShort of that, I'd drop the use of \"QL bits\" in favor of \"loss bits\" everywhere in the draft.",
+          "createdAt": "2020-01-09T18:47:41Z",
+          "updatedAt": "2020-01-09T18:47:41Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "I think I've replaced \"loss bit\" with \"loss event bit\" everywhere before.  I'd say we ought to keep \"Loss event bit\" L, since it is very mnemonic.  Replacing \"QL-?bits with\" \"loss bits\" seems right.",
+          "createdAt": "2020-01-10T03:28:44Z",
+          "updatedAt": "2020-01-10T03:28:44Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'll make a PR for this.",
+          "createdAt": "2020-01-10T21:53:22Z",
+          "updatedAt": "2020-01-10T21:53:22Z"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "id": "MDU6SXNzdWU1NDc4NjE4NjI=",
+      "title": "0x1055 is not a valid TP number",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/15",
+      "state": "CLOSED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Not valid per \"QUIC Transport Parameter Registry\" in the transport draft, since 0x1055 == 134*31+27.  Damn, there was a 26/27 chance, and we blew it!",
+      "createdAt": "2020-01-10T04:42:01Z",
+      "updatedAt": "2020-01-10T22:37:05Z",
+      "closedAt": "2020-01-10T22:37:05Z",
+      "comments": [
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Wow, good catch!\r\n\r\nToo bad: \"loss\" is an excellent mnemonic device.  One the bright size, \"lost\" is only 2 away: 0x1057.",
+          "createdAt": "2020-01-10T13:33:15Z",
+          "updatedAt": "2020-01-10T13:33:15Z"
+        },
+        {
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@igorlord: you mean 30/31 but, indeed, too bad :)\r\n\r\nOut of curiosity: where does this blacklisting of 27 modulo 31 come from ?",
+          "createdAt": "2020-01-10T14:23:55Z",
+          "updatedAt": "2020-01-10T14:23:55Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "0x8175: \"bits\"",
+          "createdAt": "2020-01-10T14:41:03Z",
+          "updatedAt": "2020-01-10T14:41:03Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "@dtikhonov Let's go with 0x1057.\r\n\r\n@ferrieux The specific formula -- do not remember where it came from.",
+          "createdAt": "2020-01-10T20:56:21Z",
+          "updatedAt": "2020-01-10T20:56:21Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Resolved via #16 ",
+          "createdAt": "2020-01-10T22:37:03Z",
+          "updatedAt": "2020-01-10T22:37:03Z"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "MDU6SXNzdWU1NDg0NTk3ODY=",
+      "title": "What happens to L in DATAGRAM mode ?",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/18",
+      "state": "CLOSED",
+      "author": "ferrieux",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "While considering opt-ack mitigation and the possible associated noise on Q, the distinction between normal (STREAM) and DATAGRAM modes came up. As it turns out, an \"unpolluted\" Q is of concern only for DATAGRAM (since for stream, stream progression gives the same info).\r\n\r\nNow, how would the L bit be computed in the DATAGRAM case ? L is supposed to be low-hanging fruit for a \"loss detection machinery\", which is the algorithm driving the lifecycle of packets in the retrans queue. But DATAGRAMs don't have a retrans queue, right ?\r\n\r\nIf it turns out that L cannot be defined for DATAGRAM, we may be better off disabling lossbits altogether in that case. Ipso facto, in the STREAM case, noisy-Q (decrement when mitigating opt-ack) is unneeded. \r\n\r\nAm I missing something ?",
+      "createdAt": "2020-01-11T17:52:58Z",
+      "updatedAt": "2020-01-16T10:22:41Z",
+      "closedAt": "2020-01-16T10:22:41Z",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "I do not understand the problem.  DATAGRAM is an ACK-eliciting frame (it has to be for the congestion controller to work).  So loss of packets containing DATAGRAMs is known to the sender (who will likely not retransmit lost DATAGRAMs, but that's an orthogonal concern).",
+          "createdAt": "2020-01-13T00:27:46Z",
+          "updatedAt": "2020-01-13T00:27:46Z"
+        },
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree with Igor:  A lost packet is a lost packet.",
+          "createdAt": "2020-01-13T00:32:48Z",
+          "updatedAt": "2020-01-13T00:32:48Z"
+        },
+        {
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "body": "OK, but being ACK-eliciting does not imply full lifecycle handling like would be needed for a retrans queue. If the API uses QUIC packet numbers as identifiers (one in return from a \"send\", and one passed to the ack callback), then the stack itself can remain entirely stateless. In this case, there is no such thing as a timer deciding that a given PN is lost. For L to work, this logic must then be added.",
+          "createdAt": "2020-01-13T08:12:09Z",
+          "updatedAt": "2020-01-13T08:12:09Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "@ferrieux I am still unsure what logic needs to be added to the stack.  If the receiver stack received a valid packet, it will ACK it in due time.  If that packet contained an ACK-eliciting frame, the ACK will have a tight \"deadline\" when it must go out (if the packet contained no ACK-eliciting frames, the ACK may be delayed significantly). DATAGRAM is an ACK-eliciting frame. \r\n\r\nThe sender will know which packets were lost with the same degree of reliability, regardless of whether the packets contained STREAM or DATAGRAM frames.  It can maintain L counter equally well when DATAGRAM is used.\r\n\r\nWhat am I missing?",
+          "createdAt": "2020-01-14T18:35:30Z",
+          "updatedAt": "2020-01-14T18:36:21Z"
+        },
+        {
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh, you mean that the DATAGRAM frames must keep enough state (similar to retrans queue entries) until their ACK arrives in order to feed the congestion control ? Ok, i n that case, indeed, L is a no-brainer, since these entries will have an expiration timeout (at which time an L=1 is emitted).\r\n\r\nNow, in a QUIC-in-QUIC (or TCP-in-QUIC) scenario, where QUIC datagrams encapsulate an L4 with its own congestion control, I guess we want the container-QUIC's congestion control to be disabled. In that case, will the entry expiration timeout still exist ?",
+          "createdAt": "2020-01-15T20:47:43Z",
+          "updatedAt": "2020-01-15T20:47:43Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "> Oh, you mean that the DATAGRAM frames must keep enough state [...].\r\n\r\nYes, except congestion state (and hence ACKing) is \"attached\" not to QIUC frames (like DATAGRAM) but to QUIC packets.\r\n\r\n> Now, in a QUIC-in-QUIC (or TCP-in-QUIC) scenario, [...]\r\n\r\nThis is no different from any A-in-B scenario.  Both inner and outer protocols operate independently from each other (other the other protocol enforcing some PMU on the inner protocol).  Of course, depending on B, A may experience \"interesting\" network properties.",
+          "createdAt": "2020-01-16T01:41:00Z",
+          "updatedAt": "2020-01-16T01:41:00Z"
+        },
+        {
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Both inner and outer protocols operate independently from each other\r\n\r\nWell, cascading two BBRs or two Cubics is not really desirable, so I imagined some API to disable congestion control in the outer (datagram-bearing) QUIC...",
+          "createdAt": "2020-01-16T10:22:41Z",
+          "updatedAt": "2020-01-16T10:22:41Z"
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "id": "MDU6SXNzdWU1NTQ2NjAwOTA=",
+      "title": "organization of the document",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/34",
+      "state": "OPEN",
+      "author": "NicoKos",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The document jumps from Introduction to the solution. A motivation section could help design the scope of the observer and what it can see and cannot. \r\n\r\nI think a motivation section could help identifying what is needed and the rationale behind the Q and I bits. \r\n\r\nThis would also help in detailing what is the rationale behind each of Q and I. \r\n",
+      "createdAt": "2020-01-24T10:37:13Z",
+      "updatedAt": "2020-02-04T16:58:02Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Thanks for the feedback.  I think we used Introduction largely for motivation.  Is there something you can recommend we talk about in the Motivation section?  Or do you have a suggestion on what to leave in the Introduction and what to move to the Motivation?",
+          "createdAt": "2020-01-24T16:05:20Z",
+          "updatedAt": "2020-01-24T16:05:20Z"
+        },
+        {
+          "author": "NicoKos",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I proposed some text update in PR #36 ",
+          "createdAt": "2020-02-04T16:58:01Z",
+          "updatedAt": "2020-02-04T16:58:01Z"
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "id": "MDU6SXNzdWU1NTQ2NjA2NTk=",
+      "title": "Simple questions for the security section ?",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/35",
+      "state": "CLOSED",
+      "author": "NicoKos",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Is it relevant to add simple questions in the security section ?\r\n\r\n\"What can the observer see?\"\r\n\"Is it possible that an observer correlate past/current connections?\"\r\n",
+      "createdAt": "2020-01-24T10:38:16Z",
+      "updatedAt": "2020-02-04T17:01:43Z",
+      "closedAt": "2020-02-04T17:01:43Z",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Do you have some ideas for what you'd like to see for those questions?",
+          "createdAt": "2020-01-24T16:01:30Z",
+          "updatedAt": "2020-01-24T16:01:30Z"
+        },
+        {
+          "author": "NicoKos",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "after a better reading of the security section it looks to me that there is no need to go deeper into such details. ",
+          "createdAt": "2020-02-04T17:01:43Z",
+          "updatedAt": "2020-02-04T17:01:43Z"
+        }
+      ]
+    },
+    {
+      "number": 37,
+      "id": "MDU6SXNzdWU1NjMzMjg1ODk=",
+      "title": "Add reason for using reserved bits instead of something else",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/37",
+      "state": "OPEN",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "The alternatives could be:\r\n\r\n- lower protocol layers (like CONEX).\r\n- A new \"plaintext header extensions mechanism\"\r\n- A extra stats-only packet on the path\r\n\r\nThe answer to all of the above: deployability.  Lower protocol layer extensions do not have network (and minimal OS support, especially for optimized path).  Other QUIC options increase overhead to a point that it is not deployable.",
+      "createdAt": "2020-02-11T16:34:41Z",
+      "updatedAt": "2020-02-11T16:34:41Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 38,
+      "id": "MDU6SXNzdWU1NjMzNzQ1MjQ=",
+      "title": "Emphasise that loss bits are for monitoring/troubleshooting, not control",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/38",
+      "state": "CLOSED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Control tends to ossify usage.  Monitoring/troubleshooting -- a lot less.",
+      "createdAt": "2020-02-11T17:49:23Z",
+      "updatedAt": "2020-03-20T16:13:11Z",
+      "closedAt": "2020-03-20T16:13:11Z",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Resolved by #39 ",
+          "createdAt": "2020-03-20T16:13:11Z",
+          "updatedAt": "2020-03-20T16:13:11Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYwMTM3ODIw",
+      "title": "Specify the loss bits transport parameter",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/1",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Ideally, the transport parameter description should link to the section where the mechanics of the R bits change is described.",
+      "createdAt": "2020-01-07T19:30:34Z",
+      "updatedAt": "2020-01-08T14:06:28Z",
+      "closedAt": "2020-01-08T13:48:54Z",
+      "mergedAt": "2020-01-08T13:48:54Z",
+      "mergedBy": "dtikhonov",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzM5ODc1NjEx",
+          "commit": {
+            "abbreviatedOid": "6505999"
+          },
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Maybe also keep the introductory sentence explaining the tristate nature: \"Presence of the loss_bits TP indicates that the sender supports the loss bits extension. The loss bits TP is an integer ...\"\r\n",
+          "createdAt": "2020-01-08T13:52:01Z",
+          "updatedAt": "2020-01-08T13:54:06Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYwNDYzNzY3",
+      "title": "Add myself to the list of editors",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/2",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-08T13:39:43Z",
+      "updatedAt": "2020-01-08T15:06:56Z",
+      "closedAt": "2020-01-08T15:06:55Z",
+      "mergedAt": "2020-01-08T15:06:55Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzM5OTI1ODg0",
+          "commit": {
+            "abbreviatedOid": "90ca8d8"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-08T15:06:49Z",
+          "updatedAt": "2020-01-08T15:06:49Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYwNDkyNTMw",
+      "title": "Specify where QL bits go and how they are (not) protected",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/3",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-08T14:42:58Z",
+      "updatedAt": "2020-01-08T15:06:10Z",
+      "closedAt": "2020-01-08T15:06:09Z",
+      "mergedAt": "2020-01-08T15:06:09Z",
+      "mergedBy": "igorlord",
+      "comments": [
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Perhaps a better way to say it is that bit 0x10 is the Q bit and bit 0x08 is the L bit.  This would follow the way the transport draft does it.",
+          "createdAt": "2020-01-08T14:56:45Z",
+          "updatedAt": "2020-01-08T14:56:45Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzM5OTE2MzU2",
+          "commit": {
+            "abbreviatedOid": "9246f3c"
+          },
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "\r\nThe transport draft unfortunately numbers the bits with 0 as highest ...\r\nShouldn't it be Q=3, L=4 ?\r\n\r\n0 1 2 3 4 5 6 7 \r\n+-+-+-+-+-+-+-+-+\r\n|0|1|S|R|R|K|P P|\r\n|0|1|S|Q|L|K|P P|",
+          "createdAt": "2020-01-08T14:53:32Z",
+          "updatedAt": "2020-01-08T14:53:51Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzM5OTI1MTg1",
+          "commit": {
+            "abbreviatedOid": "9246f3c"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "See Section 3.  I call them bit 0x10 and bit 0x08.\r\nLet's stick with QUIC draft nomenclature.",
+          "createdAt": "2020-01-08T15:05:49Z",
+          "updatedAt": "2020-01-08T15:05:49Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYwNDk1NTUy",
+      "title": "Add introductory sentence to loss_bits parameter specification",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/4",
+      "state": "CLOSED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As suggested by @ferrieux in PR #1.",
+      "createdAt": "2020-01-08T14:49:17Z",
+      "updatedAt": "2020-01-15T19:33:33Z",
+      "closedAt": "2020-01-09T18:28:25Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwMjE4MzQ2",
+          "commit": {
+            "abbreviatedOid": "7661b04"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-08T23:51:16Z",
+          "updatedAt": "2020-01-08T23:51:16Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "I think this is either redundant (clearly the implementation is following this draft by sending this TP) or vague (what exactly does \"support\" of the extension entail?).  I think PR #5 is a bit more direct about this.",
+              "createdAt": "2020-01-08T23:51:16Z",
+              "updatedAt": "2020-01-08T23:51:16Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYwNjA3MjUx",
+      "title": "Cleanup of transport param and related QUIC v1 mechanics text",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/5",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Minor cleanup of transport param text.",
+      "createdAt": "2020-01-08T19:00:49Z",
+      "updatedAt": "2020-01-09T13:48:07Z",
+      "closedAt": "2020-01-08T23:48:57Z",
+      "mergedAt": "2020-01-08T23:48:57Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwMDc4ODI2",
+          "commit": {
+            "abbreviatedOid": "612015b"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-08T19:06:04Z",
+          "updatedAt": "2020-01-08T19:11:07Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "Do you want to include the changes from PR #4 here?",
+              "createdAt": "2020-01-08T19:06:04Z",
+              "updatedAt": "2020-01-08T19:11:07Z"
+            },
+            {
+              "originalPosition": 44,
+              "body": "I prefer grouping the QUIC changes introduced by the extension into a single section.  Perhaps \"mechanics\" is not the right title -- is that why you propose dropping it?",
+              "createdAt": "2020-01-08T19:09:54Z",
+              "updatedAt": "2020-01-08T19:11:07Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwMjE2MjA2",
+          "commit": {
+            "abbreviatedOid": "612015b"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-08T23:44:22Z",
+          "updatedAt": "2020-01-08T23:44:22Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "I do not think they are needed. \"Supports loss bits extension\" (from PR #4) is on its face obvious (how else would it know to send this TP?) and does not add anything else.",
+              "createdAt": "2020-01-08T23:44:22Z",
+              "updatedAt": "2020-01-08T23:44:22Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwMjE2NzYw",
+          "commit": {
+            "abbreviatedOid": "612015b"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-08T23:46:07Z",
+          "updatedAt": "2020-01-08T23:46:07Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "Yes.  I did not like \"Mechanics\" as a section.  If you can come up with a better title and have an intro sentence, make a PR.\r\n\r\nAlso, would you include \"Transport Parameter\" section as a subsection to that one?",
+              "createdAt": "2020-01-08T23:46:07Z",
+              "updatedAt": "2020-01-08T23:46:07Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwNTMwMjMy",
+          "commit": {
+            "abbreviatedOid": "612015b"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-09T13:48:07Z",
+          "updatedAt": "2020-01-09T13:48:07Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "OK, I'll try to come up with something.\r\n\r\nGood point about \"Transport Parameter\" section.",
+              "createdAt": "2020-01-09T13:48:07Z",
+              "updatedAt": "2020-01-09T13:48:07Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYxMDEwMTYz",
+      "title": "Use fewer top-level sections",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/6",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This change is good for the following (perhaps subjective) reasons:\r\n1. The changes necessary to use the extension are now in a single section.\r\n1. There are now fewer top-level subsections, which makes ToC looks better.\r\n1. The number of top-level sections is no longer much larger than the number of pages.\r\n\r\nThe name of the new top-level section, _Implementation_, is better than _Mechanics_ that preceded it.  There may be better choices -- this is just the best I can come up with at the moment.",
+      "createdAt": "2020-01-09T15:15:12Z",
+      "updatedAt": "2020-01-09T18:28:02Z",
+      "closedAt": "2020-01-09T18:28:01Z",
+      "mergedAt": "2020-01-09T18:28:01Z",
+      "mergedBy": "igorlord",
+      "comments": [
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "/cc @ferrieux.  (The GitHub UI won't let me add him as a reviewer.)",
+          "createdAt": "2020-01-09T15:17:07Z",
+          "updatedAt": "2020-01-09T15:17:07Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwNzI0OTIz",
+          "commit": {
+            "abbreviatedOid": "c907c01"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "I would s/Implementation/QUIC v1 Implementation/.  I will create a separate PR for this and we can discuss.",
+          "createdAt": "2020-01-09T18:27:52Z",
+          "updatedAt": "2020-01-09T18:27:52Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYxMTEwOTg4",
+      "title": "Rename Implementation heading",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/11",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-09T19:04:46Z",
+      "updatedAt": "2020-01-10T03:21:37Z",
+      "closedAt": "2020-01-10T03:21:36Z",
+      "mergedAt": "2020-01-10T03:21:36Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwNzQ5MDQz",
+          "commit": {
+            "abbreviatedOid": "fcade46"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-09T19:06:28Z",
+          "updatedAt": "2020-01-09T19:06:28Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYxMTE5NDM3",
+      "title": "Improve Security recommendations",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/12",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "* Be more resolute about \"no informaiton\" (Issue #7)\r\n* Clarify shortening Q run (Issue #8)",
+      "createdAt": "2020-01-09T19:26:47Z",
+      "updatedAt": "2020-01-10T21:52:52Z",
+      "closedAt": "2020-01-10T21:52:50Z",
+      "mergedAt": "2020-01-10T21:52:50Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwNzYzNTEz",
+          "commit": {
+            "abbreviatedOid": "8f19d6f"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2020-01-09T19:31:35Z",
+          "updatedAt": "2020-01-09T19:31:42Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "I have to take back what I said earlier about removing packet protection:  The attacker _does_ need to remove it to get the packet number.  It is the packet payload that does not need to be decrypted in this case (to get at holes in STREAM frames).",
+              "createdAt": "2020-01-09T19:31:35Z",
+              "updatedAt": "2020-01-10T21:51:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwOTM2NjQy",
+          "commit": {
+            "abbreviatedOid": "8f19d6f"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-10T03:19:50Z",
+          "updatedAt": "2020-01-10T03:19:50Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "The attacker needs to remove _header_ protection.  It does _not_ need to remove _packet_ protection when Q bit signal is available.  So I believe the text here is correct.  (The terminology used in the transport draft is _packet_ protection, not _payload_ protection.)",
+              "createdAt": "2020-01-10T03:19:50Z",
+              "updatedAt": "2020-01-10T21:51:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQxMTYxMjEy",
+          "commit": {
+            "abbreviatedOid": "b292842"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-10T13:29:58Z",
+          "updatedAt": "2020-01-10T13:29:58Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Ah, OK.",
+              "createdAt": "2020-01-10T13:29:58Z",
+              "updatedAt": "2020-01-10T21:51:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQxMTY0Mjk0",
+          "commit": {
+            "abbreviatedOid": "b292842"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-10T13:35:23Z",
+          "updatedAt": "2020-01-10T13:35:23Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYxMTIwMDI0",
+      "title": "Improve (hopefully) definite article usage when writing about bits",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/13",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-09T19:28:15Z",
+      "updatedAt": "2020-01-10T03:24:36Z",
+      "closedAt": "2020-01-10T03:24:35Z",
+      "mergedAt": "2020-01-10T03:24:35Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQwOTM3NDk3",
+          "commit": {
+            "abbreviatedOid": "2e02d55"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "For me, a non-native speaker, the new articles sound plausible.  Let them live!",
+          "createdAt": "2020-01-10T03:24:09Z",
+          "updatedAt": "2020-01-10T03:24:09Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYxMjY4NTM5",
+      "title": "Add middle boxes using Q bit signal for reordering fixup as a concern.",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/14",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Adding this as an ossification concern for now.  Happy to find a different place it, if needed.",
+      "createdAt": "2020-01-10T04:21:24Z",
+      "updatedAt": "2020-01-10T21:19:36Z",
+      "closedAt": "2020-01-10T21:19:35Z",
+      "mergedAt": "2020-01-10T21:19:35Z",
+      "mergedBy": "igorlord",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "@ferrieux \r\n> In addition to the spin bit, there's also the IP.id in IPv4.\r\n\r\nIf IP.id often helpful for reordering fixup?  Linux sets IP.id=0, unless there are fragments.",
+          "createdAt": "2020-01-10T21:19:17Z",
+          "updatedAt": "2020-01-10T21:19:17Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQxMTU4NTkx",
+          "commit": {
+            "abbreviatedOid": "d1f4db5"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-10T13:25:03Z",
+          "updatedAt": "2020-01-10T13:25:03Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I'd split the last sentence into two.",
+              "createdAt": "2020-01-10T13:25:03Z",
+              "updatedAt": "2020-01-10T21:05:01Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQxMTU4OTcx",
+          "commit": {
+            "abbreviatedOid": "d1f4db5"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-10T13:25:52Z",
+          "updatedAt": "2020-01-10T13:25:52Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQxMTc3OTU3",
+          "commit": {
+            "abbreviatedOid": "d1f4db5"
+          },
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "In addition to the spin bit, there's also the IP.id in IPv4.",
+          "createdAt": "2020-01-10T13:59:21Z",
+          "updatedAt": "2020-01-10T13:59:21Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQxNDI2OTU4",
+          "commit": {
+            "abbreviatedOid": "0dff3bf"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-10T21:17:43Z",
+          "updatedAt": "2020-01-10T21:17:44Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Split it into two and recombined the first part with the previous sentence.",
+              "createdAt": "2020-01-10T21:17:43Z",
+              "updatedAt": "2020-01-10T21:17:44Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYxNjI5Nzg0",
+      "title": "Use 0x1057 for TP number, as 0x1055 is illegal.",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/16",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes bug #15",
+      "createdAt": "2020-01-10T21:30:26Z",
+      "updatedAt": "2020-01-10T22:36:17Z",
+      "closedAt": "2020-01-10T22:36:16Z",
+      "mergedAt": "2020-01-10T22:36:16Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQxNDU4ODQ3",
+          "commit": {
+            "abbreviatedOid": "99ca5f8"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-10T22:36:04Z",
+          "updatedAt": "2020-01-10T22:36:04Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 17,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYxNjQ4ODQx",
+      "title": "Add IANA Considerations",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/17",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-10T22:34:56Z",
+      "updatedAt": "2020-01-15T19:32:29Z",
+      "closedAt": "2020-01-15T19:32:28Z",
+      "mergedAt": "2020-01-15T19:32:28Z",
+      "mergedBy": "igorlord",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "> So, this equates \"TP present, and empty\" with value 0, both meaning \"tolerate receiving\", right?\r\n\r\nNot exactly.  \"TP empty\" is not valid, since TP requires an integer parameter. \r\n\r\n> Also, since these are varints, value 0 may be represented as 0x00, 0x4000, 0x80000000 or 0xC000000000000000, right (though I guess those subnormal varints are discouraged) ?\r\n\r\nYes.  That's how varints work.  Since pretty much everything in QUIC is varint, it sees best to stick with this (especially since it allows for a 1-byte encoding of what we care about: 0 and 1).",
+          "createdAt": "2020-01-13T23:24:48Z",
+          "updatedAt": "2020-01-13T23:24:48Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyMTU0NDEz",
+          "commit": {
+            "abbreviatedOid": "47befea"
+          },
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "So, this equates \"TP present, and empty\" with value 0, both meaning \"tolerate receiving\", right ?\r\nAlso, since these are varints, value 0 may be represented as 0x00, 0x4000, 0x80000000 or 0xC000000000000000, right (though I guess those subnormal varints are discouraged) ?",
+          "createdAt": "2020-01-13T21:34:28Z",
+          "updatedAt": "2020-01-13T22:05:49Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzY5OTQ4",
+          "commit": {
+            "abbreviatedOid": "47befea"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-14T19:07:26Z",
+          "updatedAt": "2020-01-14T19:07:27Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I don't think we need to recap how the transport parameter is used here -- it is done in the _Transport Parameter_ section.  We do something simple instead:\r\n\r\n> Specification: Indicates that the endpoint supports receiving or sending loss bits.",
+              "createdAt": "2020-01-14T19:07:27Z",
+              "updatedAt": "2020-01-14T19:07:27Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyODkxNTA1",
+          "commit": {
+            "abbreviatedOid": "47befea"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-14T22:49:38Z",
+          "updatedAt": "2020-01-14T22:49:39Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I was basing this on the DATAGRAM draft (https://tools.ietf.org/html/draft-pauly-quic-datagram-05#section-7).\r\n\r\n> Specification:  Indicates that the connection should enable support\r\n      for unreliable DATAGRAM frames.  An endpoint that advertises this\r\n      transport parameter can receive datagrams frames from the other\r\n      endpoint, **up to and including the length in bytes provided in the\r\n      transport parameter.**",
+              "createdAt": "2020-01-14T22:49:38Z",
+              "updatedAt": "2020-01-14T22:49:39Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQzMjI0MTAy",
+          "commit": {
+            "abbreviatedOid": "47befea"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-15T13:41:14Z",
+          "updatedAt": "2020-01-15T13:41:14Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I was using the [1wd draft](https://tools.ietf.org/html/draft-huitema-quic-1wd-00#section-6) for reference:\r\n\r\n```\r\n   Specification: Indicates that the connection should use TimeStamped\r\n   ACK frames\r\n```",
+              "createdAt": "2020-01-15T13:41:14Z",
+              "updatedAt": "2020-01-15T13:41:14Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQzMzkwNDkw",
+          "commit": {
+            "abbreviatedOid": "47befea"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-15T17:24:29Z",
+          "updatedAt": "2020-01-15T17:24:29Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "@dtikhonov Well, 1wd draft defines a zero-length transport parameter. The DATAGRAM draft defines an integer parameter and asks IANA to mention the meaning of the parameter value in the registry.  We also define an integer parameter...",
+              "createdAt": "2020-01-15T17:24:29Z",
+              "updatedAt": "2020-01-15T17:24:29Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQzNDM2OTky",
+          "commit": {
+            "abbreviatedOid": "47befea"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-15T18:41:32Z",
+          "updatedAt": "2020-01-15T18:41:32Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "OK, it seems your preference is stronger than mine -- looks good to me.",
+              "createdAt": "2020-01-15T18:41:32Z",
+              "updatedAt": "2020-01-15T18:41:32Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQzNDY3MjEy",
+          "commit": {
+            "abbreviatedOid": "47befea"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-15T19:32:07Z",
+          "updatedAt": "2020-01-15T19:32:08Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Maybe a little stronger, though this is certainly something that could be trivially changed by the WG with 0 consequences to the design. :)",
+              "createdAt": "2020-01-15T19:32:08Z",
+              "updatedAt": "2020-01-15T19:32:08Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyMjU0Mzg1",
+      "title": "Replace [QL]-bit with [QL] bit and QL-bits with loss bits (Issue #10)",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/19",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #10 ",
+      "createdAt": "2020-01-13T18:17:02Z",
+      "updatedAt": "2020-01-13T18:56:45Z",
+      "closedAt": "2020-01-13T18:56:44Z",
+      "mergedAt": "2020-01-13T18:56:44Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyMDU3NDk1",
+          "commit": {
+            "abbreviatedOid": "7d01082"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-13T18:45:10Z",
+          "updatedAt": "2020-01-13T18:45:10Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyMjYxMDEw",
+      "title": "Clarify Op-ACK attack",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/20",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-13T18:31:49Z",
+      "updatedAt": "2020-01-13T18:32:21Z",
+      "closedAt": "2020-01-13T18:32:20Z",
+      "mergedAt": "2020-01-13T18:32:20Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 21,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNjk4MDUw",
+      "title": "Refactor simplification paragraph",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/21",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "One \"simplification\" is enough",
+      "createdAt": "2020-01-14T15:33:25Z",
+      "updatedAt": "2020-01-14T17:56:17Z",
+      "closedAt": "2020-01-14T17:56:16Z",
+      "mergedAt": "2020-01-14T17:56:16Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzI1OTQx",
+          "commit": {
+            "abbreviatedOid": "8912bf9"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-14T17:55:51Z",
+          "updatedAt": "2020-01-14T17:55:51Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNjk4MTQy",
+      "title": "Improve sentence about all loss types",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/22",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T15:33:36Z",
+      "updatedAt": "2020-01-14T17:57:39Z",
+      "closedAt": "2020-01-14T17:57:38Z",
+      "mergedAt": "2020-01-14T17:57:38Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzI2OTM2",
+          "commit": {
+            "abbreviatedOid": "a9fdea5"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-14T17:57:32Z",
+          "updatedAt": "2020-01-14T17:57:32Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNjk4MjY1",
+      "title": "Simplify sentence: that was one \"machinery\" too many",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/23",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T15:33:48Z",
+      "updatedAt": "2020-01-14T17:58:29Z",
+      "closedAt": "2020-01-14T17:58:28Z",
+      "mergedAt": "2020-01-14T17:58:28Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzI3NDcx",
+          "commit": {
+            "abbreviatedOid": "ba5284d"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Thank you",
+          "createdAt": "2020-01-14T17:58:23Z",
+          "updatedAt": "2020-01-14T17:58:23Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNjk4MzY3",
+      "title": "Drop two unnecessary \"the\"",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/24",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T15:33:58Z",
+      "updatedAt": "2020-01-14T17:58:59Z",
+      "closedAt": "2020-01-14T17:58:58Z",
+      "mergedAt": "2020-01-14T17:58:58Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzI3ODE3",
+          "commit": {
+            "abbreviatedOid": "614e9e8"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-14T17:58:53Z",
+          "updatedAt": "2020-01-14T17:58:53Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNjk4NDg0",
+      "title": "Refactor paragraph explaining why TCP loss won't do",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/25",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T15:34:09Z",
+      "updatedAt": "2020-01-14T18:00:34Z",
+      "closedAt": "2020-01-14T18:00:33Z",
+      "mergedAt": "2020-01-14T18:00:33Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzI4NzMy",
+          "commit": {
+            "abbreviatedOid": "1895014"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "I like this version. Topic sentence right upfront.",
+          "createdAt": "2020-01-14T18:00:24Z",
+          "updatedAt": "2020-01-14T18:00:24Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNjk4NTg4",
+      "title": "Fix run-on first sentence in Introduction",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/26",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T15:34:19Z",
+      "updatedAt": "2020-01-14T19:39:37Z",
+      "closedAt": "2020-01-14T18:01:48Z",
+      "mergedAt": "2020-01-14T18:01:48Z",
+      "mergedBy": "igorlord",
+      "comments": [
+        {
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "body": "OK, it was not a run-on -- it was just too long. :smile:",
+          "createdAt": "2020-01-14T19:39:37Z",
+          "updatedAt": "2020-01-14T19:39:37Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzI5NTQ4",
+          "commit": {
+            "abbreviatedOid": "0b5c1a2"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "It was not an run-on sentence, since there was a comma before \"and\".  But I like your version better. :)",
+          "createdAt": "2020-01-14T18:01:42Z",
+          "updatedAt": "2020-01-14T18:01:42Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 27,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNjk4NzQ1",
+      "title": "Fix: state, not signal, can be gleamed",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/27",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T15:34:33Z",
+      "updatedAt": "2020-01-14T18:03:09Z",
+      "closedAt": "2020-01-14T18:03:08Z",
+      "mergedAt": "2020-01-14T18:03:08Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzMwMjc2",
+          "commit": {
+            "abbreviatedOid": "82d131e"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Right",
+          "createdAt": "2020-01-14T18:03:03Z",
+          "updatedAt": "2020-01-14T18:03:03Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 28,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNjk4OTAw",
+      "title": "202001141032 reveal sounds better",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/28",
+      "state": "MERGED",
+      "author": "dtikhonov",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T15:34:49Z",
+      "updatedAt": "2020-01-14T18:05:25Z",
+      "closedAt": "2020-01-14T18:05:23Z",
+      "mergedAt": "2020-01-14T18:05:23Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzMxMzU3",
+          "commit": {
+            "abbreviatedOid": "8f3fcca"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-14T18:04:56Z",
+          "updatedAt": "2020-01-14T18:04:56Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNzc3NDc0",
+      "title": "Make a distinction between a 'connection' and a 'QUIC connection'",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/29",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T18:28:49Z",
+      "updatedAt": "2020-01-14T22:57:31Z",
+      "closedAt": "2020-01-14T22:57:30Z",
+      "mergedAt": "2020-01-14T22:57:30Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzcyMjI2",
+          "commit": {
+            "abbreviatedOid": "1f8fdd5"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-14T19:11:05Z",
+          "updatedAt": "2020-01-14T19:11:12Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "I don't think the indefinite article is necessary here.  Alternatively, we can rephrase this as\r\n\r\n> [...] when Destination Connection ID is changed.\r\n\r\n(Omitting the \"outgoing packets\" part.)",
+              "createdAt": "2020-01-14T19:11:05Z",
+              "updatedAt": "2020-01-14T22:56:40Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyNzgyNTM5",
+      "title": "Describe changing N during a QUIC connection",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/30",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-14T18:42:27Z",
+      "updatedAt": "2020-01-14T22:57:39Z",
+      "closedAt": "2020-01-14T22:57:38Z",
+      "mergedAt": "2020-01-14T22:57:38Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQyNzcwMjY1",
+          "commit": {
+            "abbreviatedOid": "5118692"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-14T19:07:58Z",
+          "updatedAt": "2020-01-14T19:07:58Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 31,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYyODc5Njk0",
+      "title": "Change capitalization of connection id as per transport draft",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/31",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Caps when it refers to a field, lower case otherwise.",
+      "createdAt": "2020-01-14T23:03:02Z",
+      "updatedAt": "2020-01-15T17:25:38Z",
+      "closedAt": "2020-01-15T17:25:37Z",
+      "mergedAt": "2020-01-15T17:25:37Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQzMjIyOTQ5",
+          "commit": {
+            "abbreviatedOid": "d7390b3"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-15T13:39:16Z",
+          "updatedAt": "2020-01-15T13:39:16Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYzMzEyMDI3",
+      "title": "Restore Change Log",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/32",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-15T19:59:03Z",
+      "updatedAt": "2020-01-15T21:16:34Z",
+      "closedAt": "2020-01-15T21:16:33Z",
+      "mergedAt": "2020-01-15T21:16:33Z",
+      "mergedBy": "igorlord",
+      "comments": [
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Added requested text and merging.",
+          "createdAt": "2020-01-15T21:16:21Z",
+          "updatedAt": "2020-01-15T21:16:21Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQzNDg3NTQy",
+          "commit": {
+            "abbreviatedOid": "408237c"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-15T20:06:06Z",
+          "updatedAt": "2020-01-15T20:06:07Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "More than just negotiation was added.  This list is missing short packet header change (R bits to QL bits).",
+              "createdAt": "2020-01-15T20:06:06Z",
+              "updatedAt": "2020-01-15T21:14:49Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQzNTI1Njgy",
+          "commit": {
+            "abbreviatedOid": "1783f3a"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-15T21:15:04Z",
+          "updatedAt": "2020-01-15T21:15:05Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Sure.  I'll add that.",
+              "createdAt": "2020-01-15T21:15:04Z",
+              "updatedAt": "2020-01-15T21:15:05Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 33,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzYzNzYzNDEy",
+      "title": "Move ref to tsvwg to Intro and add a link to the github repo to Abstract",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/33",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-01-16T17:31:41Z",
+      "updatedAt": "2020-01-16T19:20:34Z",
+      "closedAt": "2020-01-16T19:20:33Z",
+      "mergedAt": "2020-01-16T19:20:33Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQ0MTI5NDU0",
+          "commit": {
+            "abbreviatedOid": "5c597c7"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-01-16T18:38:05Z",
+          "updatedAt": "2020-01-16T18:38:05Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQ0MTIyMTky",
+          "commit": {
+            "abbreviatedOid": "5c597c7"
+          },
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-16T18:25:43Z",
+          "updatedAt": "2020-01-16T18:38:27Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Why is the -tsvwg draft mentioned here instead of the -quic- one ?",
+              "createdAt": "2020-01-16T18:25:43Z",
+              "updatedAt": "2020-01-16T19:18:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQ0MTM1MjE1",
+          "commit": {
+            "abbreviatedOid": "5c597c7"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-16T18:47:51Z",
+          "updatedAt": "2020-01-16T18:47:51Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "This is the git repo name...  I can rename it...",
+              "createdAt": "2020-01-16T18:47:51Z",
+              "updatedAt": "2020-01-16T19:18:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQ0MTM3NDAy",
+          "commit": {
+            "abbreviatedOid": "5c597c7"
+          },
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-16T18:51:21Z",
+          "updatedAt": "2020-01-16T18:51:21Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Or maybe give a deep link, so that people don't select the wrong file:\r\nhttps://github.com/igorlord/draft-ferrieuxhamchaoui-tsvwg-lossbits/blob/master/draft-ferrieuxhamchaoui-quic-lossbits.md",
+              "createdAt": "2020-01-16T18:51:21Z",
+              "updatedAt": "2020-01-16T19:18:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQ0MTQyNTcy",
+          "commit": {
+            "abbreviatedOid": "5c597c7"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-16T18:59:32Z",
+          "updatedAt": "2020-01-16T18:59:32Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "A deep link does not name a repository.  We'd want to encourage a discussion and PRs.",
+              "createdAt": "2020-01-16T18:59:32Z",
+              "updatedAt": "2020-01-16T19:18:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzQ0MTU1MTI4",
+          "commit": {
+            "abbreviatedOid": "04a0226"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-01-16T19:20:20Z",
+          "updatedAt": "2020-01-16T19:20:21Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Per a vote taken over email, renaming the repo to draft-ferrieuxhamchaoui-lossbits and resolving.",
+              "createdAt": "2020-01-16T19:20:20Z",
+              "updatedAt": "2020-01-16T19:20:21Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "id": "MDExOlB1bGxSZXF1ZXN0MzcwOTQ2NzI1",
+      "title": "updating the introduction and motivation",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/36",
+      "state": "MERGED",
+      "author": "NicoKos",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-02-04T16:57:38Z",
+      "updatedAt": "2020-03-09T21:09:30Z",
+      "closedAt": "2020-03-09T21:09:30Z",
+      "mergedAt": "2020-03-09T21:09:30Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzUzMTQ4NDc3",
+          "commit": {
+            "abbreviatedOid": "e4f1716"
+          },
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-02-04T17:06:39Z",
+          "updatedAt": "2020-02-04T17:06:40Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "Maybe \"loss observation\" rather than \"observable loss\", since we, as operators, don't really _need_ (observable) losses :D",
+              "createdAt": "2020-02-04T17:06:39Z",
+              "updatedAt": "2020-02-14T08:25:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzUzMTU1NTA2",
+          "commit": {
+            "abbreviatedOid": "e4f1716"
+          },
+          "author": "NicoKos",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-02-04T17:16:25Z",
+          "updatedAt": "2020-02-04T17:16:26Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "loss observation indeed ",
+              "createdAt": "2020-02-04T17:16:25Z",
+              "updatedAt": "2020-02-14T08:25:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzUzMjkwOTA4",
+          "commit": {
+            "abbreviatedOid": "98e91a5"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-02-04T20:49:47Z",
+          "updatedAt": "2020-02-04T20:49:47Z",
+          "comments": [
+            {
+              "originalPosition": 55,
+              "body": "s/I/L/",
+              "createdAt": "2020-02-04T20:49:47Z",
+              "updatedAt": "2020-02-14T08:25:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzUzMjkzNDY2",
+          "commit": {
+            "abbreviatedOid": "98e91a5"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-02-04T20:54:04Z",
+          "updatedAt": "2020-02-04T20:54:05Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "s/ so that// ?",
+              "createdAt": "2020-02-04T20:54:04Z",
+              "updatedAt": "2020-02-14T08:25:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzU2OTI1MzM3",
+          "commit": {
+            "abbreviatedOid": "1ae468b"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2020-02-11T19:18:29Z",
+          "updatedAt": "2020-02-11T19:23:14Z",
+          "comments": [
+            {
+              "originalPosition": 53,
+              "body": "Is this sentence missing a word?  Perhaps\r\n\r\n> [...] by using reserved bits **as** the \"sQuare signal\" bit...",
+              "createdAt": "2020-02-11T19:18:29Z",
+              "updatedAt": "2020-02-14T08:25:50Z"
+            },
+            {
+              "originalPosition": 42,
+              "body": "Typo: \"recommendations\"",
+              "createdAt": "2020-02-11T19:19:01Z",
+              "updatedAt": "2020-02-14T08:25:50Z"
+            },
+            {
+              "originalPosition": 43,
+              "body": "Typo: \"mentioned\"",
+              "createdAt": "2020-02-11T19:19:30Z",
+              "updatedAt": "2020-02-14T08:25:50Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "\"conjointly required\" sounds awkward.  I'd either drop \"conjointly\" -- it's not necessary -- or rephrase it.  For example:\r\n\r\n> both are necessary to detect and measure [...]",
+              "createdAt": "2020-02-11T19:22:49Z",
+              "updatedAt": "2020-02-14T08:25:50Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzU4Nzc1NzE5",
+          "commit": {
+            "abbreviatedOid": "ed154b4"
+          },
+          "author": "NicoKos",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-02-14T08:26:26Z",
+          "updatedAt": "2020-02-14T08:26:27Z",
+          "comments": [
+            {
+              "originalPosition": 53,
+              "body": "Thanks - corrected in the last commit. ",
+              "createdAt": "2020-02-14T08:26:27Z",
+              "updatedAt": "2020-02-14T08:26:27Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzU4Nzc1OTQ4",
+          "commit": {
+            "abbreviatedOid": "ed154b4"
+          },
+          "author": "NicoKos",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-02-14T08:26:54Z",
+          "updatedAt": "2020-02-14T08:26:54Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "Thanks - corrected in the last commit. ",
+              "createdAt": "2020-02-14T08:26:54Z",
+              "updatedAt": "2020-02-14T08:26:54Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzU4Nzc1OTg0",
+          "commit": {
+            "abbreviatedOid": "ed154b4"
+          },
+          "author": "NicoKos",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-02-14T08:26:58Z",
+          "updatedAt": "2020-02-14T08:26:58Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "Thanks - corrected in the last commit. ",
+              "createdAt": "2020-02-14T08:26:58Z",
+              "updatedAt": "2020-02-14T08:26:58Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzU4Nzc2MDEz",
+          "commit": {
+            "abbreviatedOid": "ed154b4"
+          },
+          "author": "NicoKos",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-02-14T08:27:02Z",
+          "updatedAt": "2020-02-14T08:27:03Z",
+          "comments": [
+            {
+              "originalPosition": 52,
+              "body": "Thanks - corrected in the last commit. ",
+              "createdAt": "2020-02-14T08:27:02Z",
+              "updatedAt": "2020-02-14T08:27:03Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MzcxMzA5MjIw",
+          "commit": {
+            "abbreviatedOid": "ed154b4"
+          },
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-03-09T15:56:54Z",
+          "updatedAt": "2020-03-09T15:56:54Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 39,
+      "id": "MDExOlB1bGxSZXF1ZXN0Mzg5OTkwNTkw",
+      "title": "Add Intended Usage",
+      "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/pull/39",
+      "state": "MERGED",
+      "author": "igorlord",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "And a few minor editorial cleanup changes.",
+      "createdAt": "2020-03-17T17:58:39Z",
+      "updatedAt": "2020-03-20T16:12:09Z",
+      "closedAt": "2020-03-20T16:12:08Z",
+      "mergedAt": "2020-03-20T16:12:08Z",
+      "mergedBy": "igorlord",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Mzc3NzM1NTAy",
+          "commit": {
+            "abbreviatedOid": "5b98800"
+          },
+          "author": "dtikhonov",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-03-19T13:49:10Z",
+          "updatedAt": "2020-03-19T13:49:10Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Mzc4NTg4NzU2",
+          "commit": {
+            "abbreviatedOid": "5b98800"
+          },
+          "author": "ferrieux",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-03-20T15:34:38Z",
+          "updatedAt": "2020-03-20T15:34:38Z",
+          "comments": []
+        }
+      ]
+    }
+  ]
+}
