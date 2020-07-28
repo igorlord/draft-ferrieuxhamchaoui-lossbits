@@ -404,7 +404,7 @@ packet sooner.
 To minimize unintentional exposure of information, loss bits provide an explicit
 loss signal -- a preferred way to share information per {{!RFC8558}}.
 
-New protocols communly have specific privacy goals, and loss reporting must
+New protocols commonly have specific privacy goals, and loss reporting must
 ensure that loss information does not compromise those privacy goals. For
 example, {{QUIC-TRANSPORT}} allows changing Connection IDs in the middle of a
 connection to reduce the likelihood of a passive observer linking old and new
