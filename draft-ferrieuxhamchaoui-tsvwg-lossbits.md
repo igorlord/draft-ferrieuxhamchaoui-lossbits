@@ -26,24 +26,28 @@ pi:
 author:
   -
     ins: A. Ferrieux
+    role: editor
     name: Alexandre Ferrieux
     org: Orange Labs
     email: alexandre.ferrieux@orange.com
   -
     ins: I. Hamchaoui
+    role: editor
     name: Isabelle Hamchaoui
     org: Orange Labs
     email: isabelle.hamchaoui@orange.com
   -
     ins: I. Lubashev
+    role: editor
     name: Igor Lubashev
     org: Akamai Technologies
-    street: 150 Broadway
-    city: Cambridge
-    code: 02142
-    region: MA
-    country: USA
     email: ilubashe@akamai.com
+  -
+    ins: D. Tikhonov
+    role: editor
+    name: Dmitri Tikhonov
+    org: LiteSpeed Technologies
+    email: dtikhonov@litespeedtech.com
 
 normative:
   IP: RFC0791
