@@ -1,6 +1,6 @@
 {
-  "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-03-20T16:13:23.174560+00:00",
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2020-07-28T16:58:51.386890+00:00",
   "repo": "igorlord/draft-ferrieuxhamchaoui-lossbits",
   "labels": [
     {
@@ -374,15 +374,15 @@
       "id": "MDU6SXNzdWU1NTQ2NjAwOTA=",
       "title": "organization of the document",
       "url": "https://github.com/igorlord/draft-ferrieuxhamchaoui-lossbits/issues/34",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "NicoKos",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The document jumps from Introduction to the solution. A motivation section could help design the scope of the observer and what it can see and cannot. \r\n\r\nI think a motivation section could help identifying what is needed and the rationale behind the Q and I bits. \r\n\r\nThis would also help in detailing what is the rationale behind each of Q and I. \r\n",
       "createdAt": "2020-01-24T10:37:13Z",
-      "updatedAt": "2020-02-04T16:58:02Z",
-      "closedAt": null,
+      "updatedAt": "2020-03-20T16:13:54Z",
+      "closedAt": "2020-03-20T16:13:54Z",
       "comments": [
         {
           "author": "igorlord",
@@ -397,6 +397,13 @@
           "body": "I proposed some text update in PR #36 ",
           "createdAt": "2020-02-04T16:58:01Z",
           "updatedAt": "2020-02-04T16:58:01Z"
+        },
+        {
+          "author": "igorlord",
+          "authorAssociation": "OWNER",
+          "body": "Resolved by #36 ",
+          "createdAt": "2020-03-20T16:13:49Z",
+          "updatedAt": "2020-03-20T16:13:49Z"
         }
       ]
     },
@@ -504,7 +511,16 @@
           "updatedAt": "2020-01-08T13:54:06Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9d246c83c92fa4ed5241461beb8bd833c4cb3b36",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001071428-tp",
+      "headRefOid": "6505999b90694983307ed5b39c037cacf4f6c7e0",
+      "mergeCommit": {
+        "oid": "0721d1a9eefd777f1f971ad8bee9c41c2c237d7a"
+      }
     },
     {
       "number": 2,
@@ -537,7 +553,16 @@
           "updatedAt": "2020-01-08T15:06:49Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9d246c83c92fa4ed5241461beb8bd833c4cb3b36",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001080833-add-dmitri-as-author",
+      "headRefOid": "90ca8d8ef88705174bfced43310aa12bfdce8f88",
+      "mergeCommit": {
+        "oid": "fa541c1242d07ee666e383ce508075256f6bcff9"
+      }
     },
     {
       "number": 3,
@@ -591,7 +616,16 @@
           "updatedAt": "2020-01-08T15:05:49Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "0721d1a9eefd777f1f971ad8bee9c41c2c237d7a",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001080850-mechanics",
+      "headRefOid": "ad4ff59d374f87b8be8382b297cbefd8be6333bf",
+      "mergeCommit": {
+        "oid": "75ea3403de03f5d90064b7c754f479ccbf910116"
+      }
     },
     {
       "number": 4,
@@ -631,7 +665,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "0721d1a9eefd777f1f971ad8bee9c41c2c237d7a",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001080947-add-loss-bits-intro",
+      "headRefOid": "7661b042a293f4f325aaffb080a5a6067dc6178e",
+      "mergeCommit": null
     },
     {
       "number": 5,
@@ -737,7 +778,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9847f024d288d5142cfc3d9d600e7fcf612965dc",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/cleanup-tp",
+      "headRefOid": "612015bea1bc057b214f5a47b7fa32792bb3681f",
+      "mergeCommit": {
+        "oid": "f8045c12083d4ba3e5c1b85d552e786acbac4419"
+      }
     },
     {
       "number": 6,
@@ -778,7 +828,16 @@
           "updatedAt": "2020-01-09T18:27:52Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "f8045c12083d4ba3e5c1b85d552e786acbac4419",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001091001-fewer-top-level-sections",
+      "headRefOid": "c907c014c146a8b8261230cd73d7f2c77499f5b5",
+      "mergeCommit": {
+        "oid": "dd7cfba4451825c1b14943df20eda5693220a45b"
+      }
     },
     {
       "number": 11,
@@ -811,7 +870,16 @@
           "updatedAt": "2020-01-09T19:06:28Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "dd7cfba4451825c1b14943df20eda5693220a45b",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/implementation-heading",
+      "headRefOid": "fcade463cbf965dc3c6e6879a1f9cb0d8f9007ad",
+      "mergeCommit": {
+        "oid": "d0a62a5e1581eed28edb203eec42031ab6f0bee7"
+      }
     },
     {
       "number": 12,
@@ -904,7 +972,16 @@
           "updatedAt": "2020-01-10T13:35:23Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "93c6c442a4d0afb40f22525db5fff1b403ce0d48",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/q-bit-no-info",
+      "headRefOid": "21402fa726126624b6d0a68bc08ca20032343864",
+      "mergeCommit": {
+        "oid": "de466458166c9812523cfb2ab8003391a655bded"
+      }
     },
     {
       "number": 13,
@@ -937,7 +1014,16 @@
           "updatedAt": "2020-01-10T03:24:09Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "dd7cfba4451825c1b14943df20eda5693220a45b",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001091413-fix-the-articles",
+      "headRefOid": "2e02d5518bfbee6628c3acc09da11a39e9e633f8",
+      "mergeCommit": {
+        "oid": "4f8a6ec582c8212b45df3a997dad6d30d8b0a101"
+      }
     },
     {
       "number": 14,
@@ -1031,7 +1117,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "4f8a6ec582c8212b45df3a997dad6d30d8b0a101",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/reordering-threat",
+      "headRefOid": "0dff3bff95a9e1f0d931b8e458719578906a37ce",
+      "mergeCommit": {
+        "oid": "93c6c442a4d0afb40f22525db5fff1b403ce0d48"
+      }
     },
     {
       "number": 16,
@@ -1064,7 +1159,16 @@
           "updatedAt": "2020-01-10T22:36:04Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "93c6c442a4d0afb40f22525db5fff1b403ce0d48",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001101628-tp-is-0x1057",
+      "headRefOid": "99ca5f87b8b7ce22bc75346aa30251aa8c8e27e8",
+      "mergeCommit": {
+        "oid": "c580775836f25438bd667c4936cd2e043fb061a5"
+      }
     },
     {
       "number": 17,
@@ -1225,7 +1329,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "c580775836f25438bd667c4936cd2e043fb061a5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/iana",
+      "headRefOid": "47befeaea35c68176cbbc3ca580c516cad1e22e4",
+      "mergeCommit": {
+        "oid": "95eb2ef32f15e3bb6540afa0aeb2bac8124ae741"
+      }
     },
     {
       "number": 19,
@@ -1258,7 +1371,16 @@
           "updatedAt": "2020-01-13T18:45:10Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "50de5813a7d3d0ca4dbef9113d780e232d831844",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/ql-bits",
+      "headRefOid": "7d010828f8fc4736facb2a639c7ff84784e5a6ab",
+      "mergeCommit": {
+        "oid": "589090ee566a3497795701f237989abe6005d338"
+      }
     },
     {
       "number": 20,
@@ -1277,7 +1399,16 @@
       "mergedAt": "2020-01-13T18:32:20Z",
       "mergedBy": "igorlord",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "c580775836f25438bd667c4936cd2e043fb061a5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/op-ack-clarify",
+      "headRefOid": "d355810126a2ff13b0e6b816cf81e6d1ba4a7519",
+      "mergeCommit": {
+        "oid": "50de5813a7d3d0ca4dbef9113d780e232d831844"
+      }
     },
     {
       "number": 21,
@@ -1310,7 +1441,16 @@
           "updatedAt": "2020-01-14T17:55:51Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9595b7c096d70bfbf97a2bbdec4499e33971c6f5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001141025-one-simplification-is-enough",
+      "headRefOid": "8912bf9782ccc641162bab59ffafe3c54ffcc847",
+      "mergeCommit": {
+        "oid": "80bbd9db6228d2fc8606ec4c7e0f7c53be0c83b0"
+      }
     },
     {
       "number": 22,
@@ -1343,7 +1483,16 @@
           "updatedAt": "2020-01-14T17:57:32Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9595b7c096d70bfbf97a2bbdec4499e33971c6f5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001141021-all-these-loss-types",
+      "headRefOid": "a9fdea5212cd2129f2e2c139217c49a8191feaf9",
+      "mergeCommit": {
+        "oid": "a104e64e1a7021026c9ab81ee7c38fb4fa05b04f"
+      }
     },
     {
       "number": 23,
@@ -1376,7 +1525,16 @@
           "updatedAt": "2020-01-14T17:58:23Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9595b7c096d70bfbf97a2bbdec4499e33971c6f5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001141019-drop-one-machinery",
+      "headRefOid": "ba5284db25992aecfb02d914a1e9a5a5bc83e48c",
+      "mergeCommit": {
+        "oid": "e921f50ef15be7839641803e8379411a4a44641c"
+      }
     },
     {
       "number": 24,
@@ -1409,7 +1567,16 @@
           "updatedAt": "2020-01-14T17:58:53Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9595b7c096d70bfbf97a2bbdec4499e33971c6f5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001141006-drop-unneeded-thes",
+      "headRefOid": "614e9e8db47a67d0f64054c917734f905a30ee5d",
+      "mergeCommit": {
+        "oid": "6fda9f83a5d3a2b80a071d9f197d301dbdffde77"
+      }
     },
     {
       "number": 25,
@@ -1442,7 +1609,16 @@
           "updatedAt": "2020-01-14T18:00:24Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9595b7c096d70bfbf97a2bbdec4499e33971c6f5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001141003-reorg-why-not-tcp",
+      "headRefOid": "18950147dbab0f22165deed731ae7dfe1f9f226d",
+      "mergeCommit": {
+        "oid": "505c6c2c2976ae547d218cb3c796d8776963d114"
+      }
     },
     {
       "number": 26,
@@ -1483,7 +1659,16 @@
           "updatedAt": "2020-01-14T18:01:42Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9595b7c096d70bfbf97a2bbdec4499e33971c6f5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001140956-fix-runon-intro",
+      "headRefOid": "0b5c1a21719a1a865f9882f4c89118a2ea8bab14",
+      "mergeCommit": {
+        "oid": "2d90fc8ff6fa67cafcda29f703edf4c79f466af7"
+      }
     },
     {
       "number": 27,
@@ -1516,7 +1701,16 @@
           "updatedAt": "2020-01-14T18:03:03Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9595b7c096d70bfbf97a2bbdec4499e33971c6f5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001141029-state-not-signal",
+      "headRefOid": "82d131e29a7385485055c84b85b16c3c0947ff35",
+      "mergeCommit": {
+        "oid": "d70ff6fd2de57dc08e1f25c49a87fddc52b9f44a"
+      }
     },
     {
       "number": 28,
@@ -1549,7 +1743,16 @@
           "updatedAt": "2020-01-14T18:04:56Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "9595b7c096d70bfbf97a2bbdec4499e33971c6f5",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "202001141032-reveal-sounds-better",
+      "headRefOid": "8f3fcca33f6fd368c821a9cf43f75938be2a7ce0",
+      "mergeCommit": {
+        "oid": "f4a089152be006fc9bae627ca52d9ab673e6c257"
+      }
     },
     {
       "number": 29,
@@ -1589,7 +1792,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "f4a089152be006fc9bae627ca52d9ab673e6c257",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/quic-connection-vs-connection",
+      "headRefOid": "b966ddced76ee7edc43469964415d36bb1778e2e",
+      "mergeCommit": {
+        "oid": "f4e0daf288fde165f829f272a0486df2da2b8c2d"
+      }
     },
     {
       "number": 30,
@@ -1622,7 +1834,16 @@
           "updatedAt": "2020-01-14T19:07:58Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "f4a089152be006fc9bae627ca52d9ab673e6c257",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/change-n",
+      "headRefOid": "5118692449c14b1105ee87f50f1a1fc988b5aac1",
+      "mergeCommit": {
+        "oid": "32a5dd205d8336af0636c8e0491bdb47f445b238"
+      }
     },
     {
       "number": 31,
@@ -1655,7 +1876,16 @@
           "updatedAt": "2020-01-15T13:39:16Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "32a5dd205d8336af0636c8e0491bdb47f445b238",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/connection-cap",
+      "headRefOid": "d7390b3409f7cba100426b9dfb373b986119bf81",
+      "mergeCommit": {
+        "oid": "78becb0a7091079cf73a71bbc509c74f987bb85d"
+      }
     },
     {
       "number": 32,
@@ -1723,7 +1953,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "95eb2ef32f15e3bb6540afa0aeb2bac8124ae741",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/fix-changelist",
+      "headRefOid": "1783f3ad1630ed3a36b37d9474d92a1fd9956d13",
+      "mergeCommit": {
+        "oid": "c4835744913539472311e54085c9cac52d94af39"
+      }
     },
     {
       "number": 33,
@@ -1856,7 +2095,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "f6d3b0826ed135460cd207602917d429c28a31c1",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "ilubashe/move-tsvwg-ref-to-intro",
+      "headRefOid": "04a022644d687979eff1f8b5f4489957de5f0964",
+      "mergeCommit": {
+        "oid": "bc9893edb42e9246aac56258e227839f518a2490"
+      }
     },
     {
       "number": 36,
@@ -2087,7 +2335,16 @@
           "updatedAt": "2020-03-09T15:56:54Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "b092ebd2d284d72c2a5136b16e75ccc4e3d98c77",
+      "headRepository": "NicoKos/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "patch-1",
+      "headRefOid": "ed154b43d80d3e19da8349b75b17b654b331ed1d",
+      "mergeCommit": {
+        "oid": "822c20d75b3c3429839a53a71045d20dba6f8041"
+      }
     },
     {
       "number": 39,
@@ -2133,7 +2390,16 @@
           "updatedAt": "2020-03-20T15:34:38Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "baseRefName": "master",
+      "baseRefOid": "822c20d75b3c3429839a53a71045d20dba6f8041",
+      "headRepository": "igorlord/draft-ferrieuxhamchaoui-lossbits",
+      "headRefName": "igorlord/purpose",
+      "headRefOid": "5b988007a833edc349f8034a194cdeabef063081",
+      "mergeCommit": {
+        "oid": "3383bd1f2fe8219d6822ef14916fb704ca129fd0"
+      }
     }
   ]
 }
