@@ -530,7 +530,7 @@ Internet-Draft                  loss-bits                      July 2020
    an explicit loss signal - a preferred way to share information per
    [RFC8558].
 
-   New protocols communly have specific privacy goals, and loss
+   New protocols commonly have specific privacy goals, and loss
    reporting must ensure that loss information does not compromise those
    privacy goals.  For example, [QUIC-TRANSPORT] allows changing
    Connection IDs in the middle of a connection to reduce the likelihood
