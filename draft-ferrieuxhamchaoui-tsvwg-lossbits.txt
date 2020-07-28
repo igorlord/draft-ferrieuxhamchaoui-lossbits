@@ -5,9 +5,9 @@
 TSVWG                                                        A. Ferrieux
 Internet-Draft                                              I. Hamchaoui
 Intended status: Informational                               Orange Labs
-Expires: 21 September 2020                                   I. Lubashev
+Expires: 29 January 2021                                     I. Lubashev
                                                      Akamai Technologies
-                                                           20 March 2020
+                                                            28 July 2020
 
 
              Packet Loss Signaling for Encrypted Protocols
@@ -38,7 +38,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 September 2020.
+   This Internet-Draft will expire on 29 January 2021.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Ferrieux, et al.        Expires 21 September 2020               [Page 1]
+Ferrieux, et al.         Expires 29 January 2021                [Page 1]
 
-Internet-Draft                  loss-bits                     March 2020
+Internet-Draft                  loss-bits                      July 2020
 
 
    extracted from this document must include Simplified BSD License text
@@ -65,184 +65,84 @@ Internet-Draft                  loss-bits                     March 2020
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  Notational Conventions  . . . . . . . . . . . . . . . . . . .   3
-   3.  Loss Bits . . . . . . . . . . . . . . . . . . . . . . . . . .   3
-     3.1.  Setting the sQuare Bit on Outgoing Packets  . . . . . . .   4
-       3.1.1.  Q Period Selection  . . . . . . . . . . . . . . . . .   4
-     3.2.  Setting the Loss Event Bit on Outgoing Packets  . . . . .   4
-   4.  Using the Loss Bits for Passive Loss Measurement  . . . . . .   5
-     4.1.  End-To-End Loss . . . . . . . . . . . . . . . . . . . . .   5
+     1.1.  Motivation for Passive On-Path Loss Observation . . . . .   3
+     1.2.  On-Path Loss Observation  . . . . . . . . . . . . . . . .   3
+     1.3.  On-Path Loss Signaling  . . . . . . . . . . . . . . . . .   4
+     1.4.  Recommended Use of the Signals  . . . . . . . . . . . . .   4
+   2.  Notational Conventions  . . . . . . . . . . . . . . . . . . .   4
+   3.  Loss Bits . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     3.1.  Setting the sQuare Bit on Outgoing Packets  . . . . . . .   5
+       3.1.1.  Q Run Length Selection  . . . . . . . . . . . . . . .   5
+     3.2.  Setting the Loss Event Bit on Outgoing Packets  . . . . .   5
+   4.  Using the Loss Bits for Passive Loss Measurement  . . . . . .   6
+     4.1.  End-To-End Loss . . . . . . . . . . . . . . . . . . . . .   6
      4.2.  Upstream Loss . . . . . . . . . . . . . . . . . . . . . .   6
-     4.3.  Correlating End-to-End and Upstream Loss  . . . . . . . .   6
+     4.3.  Correlating End-to-End and Upstream Loss  . . . . . . . .   7
      4.4.  Downstream Loss . . . . . . . . . . . . . . . . . . . . .   7
      4.5.  Observer Loss . . . . . . . . . . . . . . . . . . . . . .   7
-   5.  ECN-Echo Event Bit  . . . . . . . . . . . . . . . . . . . . .   7
+   5.  ECN-Echo Event Bit  . . . . . . . . . . . . . . . . . . . . .   8
      5.1.  Setting the ECN-Echo Event Bit on Outgoing Packets  . . .   8
      5.2.  Using E Bit for Passive ECN-Reported Congestion
-           Measurement . . . . . . . . . . . . . . . . . . . . . . .   8
-   6.  Protocol Ossification Considerations  . . . . . . . . . . . .   8
+           Measurement . . . . . . . . . . . . . . . . . . . . . . .   9
+   6.  Protocol Ossification Considerations  . . . . . . . . . . . .   9
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
-   8.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .   9
-   9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-   10. Change Log  . . . . . . . . . . . . . . . . . . . . . . . . .   9
-     10.1.  Since version 01 . . . . . . . . . . . . . . . . . . . .   9
-     10.2.  Since version 00 . . . . . . . . . . . . . . . . . . . .   9
-   11. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  10
-   12. References  . . . . . . . . . . . . . . . . . . . . . . . . .  10
-     12.1.  Normative References . . . . . . . . . . . . . . . . . .  10
-     12.2.  Informative References . . . . . . . . . . . . . . . . .  11
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  12
+     7.1.  Optimistic ACK Attack . . . . . . . . . . . . . . . . . .  10
+   8.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  10
+   9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  10
+   10. Change Log  . . . . . . . . . . . . . . . . . . . . . . . . .  10
+     10.1.  Since version 02 . . . . . . . . . . . . . . . . . . . .  10
+     10.2.  Since version 01 . . . . . . . . . . . . . . . . . . . .  11
+     10.3.  Since version 00 . . . . . . . . . . . . . . . . . . . .  11
+   11. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  11
+   12. References  . . . . . . . . . . . . . . . . . . . . . . . . .  11
+     12.1.  Normative References . . . . . . . . . . . . . . . . . .  11
+     12.2.  Informative References . . . . . . . . . . . . . . . . .  12
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  13
 
 1.  Introduction
 
-   Packet loss is a pervasive problem of day-to-day network operation,
-   and proactively detecting, measuring, and locating it is crucial to
-   maintaining high QoS and timely resolution of crippling end-to-end
-   throughput issues.  To this effect, in a TCP-dominated world, network
-   operators have been heavily relying on information present in the
-   clear in TCP headers: sequence and acknowledgment numbers and SACKs
-   when enabled (see [RFC8517]).  These allow for quantitative
-   estimation of packet loss by passive on-path observation, and the
-   lossy segment (upstream or downstream from the observation point) can
-   be quickly identified by moving the passive observer around.
 
 
 
 
-Ferrieux, et al.        Expires 21 September 2020               [Page 2]
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021                [Page 2]
 
-Internet-Draft                  loss-bits                     March 2020
+Internet-Draft                  loss-bits                      July 2020
 
+
+1.1.  Motivation for Passive On-Path Loss Observation
+
+   Packet loss is hard and pervasive problem of day-to-day network
+   operation.  Proactively detecting, measuring, and locating it is
+   crucial to maintaining high QoS and timely resolution of crippling
+   end-to-end throughput issues.  To this effect, in a TCP-dominated
+   world, network operators have been heavily relying on information
+   present in the clear in TCP headers: sequence and acknowledgment
+   numbers and SACKs when enabled (see [RFC8517]).  These allow for
+   quantitative estimation of packet loss by passive on-path
+   observation.  Additionally, the lossy segment (upstream or downstream
+   from the observation point) can be quickly identified by moving the
+   passive observer around.
 
    With encrypted protocols, the equivalent transport headers are
    encrypted and passive packet loss observation is not possible, as
    described in [TRANSPORT-ENCRYPT].
 
-   Since encrypted protocols could be routed by the network differently,
-   and the fraction of Internet traffic delivered using encrypted
-   protocols is increasing every year, it is imperative to measure
-   packet loss experienced by encrypted protocol users directly instead
-   of relying on measuring TCP loss between similar endpoints.
+   Measuring TCP loss between similar endpoints cannot be relied upon to
+   evaluate encrypted protocol loss.  Different protools could be routed
+   by the network differently and the fraction of Internet traffic
+   delivered using protocols other than TCP is increasing every year.
+   It is imperative to measure packet loss experienced by encrypted
+   protocol users directly.
 
-   Following the recommendation in [RFC8558] of making path signals
-   explicit, this document proposes adding two explicit loss bits to the
-   clear portion of the protocol headers to restore network operators'
-   ability to maintain high QoS for users of encrypted protocols.  These
-   bits can be added to an unencrypted portion of a header belonging to
-   any protocol layer, e.g.  IP (see [IP]) and IPv6 (see [IPv6]) headers
-   or extensions, UDP surplus space (see [UDP-OPTIONS] and
-   [UDP-SURPLUS]), reserved bits in a QUIC v1 header (see
-   [QUIC-TRANSPORT]).
+1.2.  On-Path Loss Observation
 
-2.  Notational Conventions
-
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-   document are to be interpreted as described in [RFC2119].
-
-3.  Loss Bits
-
-   The proposal introduces two bits that are to be present in every
-   packet capable of loss reporting.  These are packets that include
-   protocol headers with the loss bits.  Only loss of packets capable of
-   loss reporting is reported using loss bits.
-
-   Whenever this specification refers to packets, it is referring only
-   to packets capable of loss reporting.
-
-   *  Q: The "sQuare signal" bit is toggled every N outgoing packets as
-      explained below in Section 3.1.
-
-   *  L: The "Loss event" bit is set to 0 or 1 according to the
-      Unreported Loss counter, as explained below in Section 3.2.
-
-   Each endpoint maintains appropriate counters independently and
-   separately for each connection (each subflow for multipath
-   connections).
-
-
-
-
-
-
-Ferrieux, et al.        Expires 21 September 2020               [Page 3]
-
-Internet-Draft                  loss-bits                     March 2020
-
-
-3.1.  Setting the sQuare Bit on Outgoing Packets
-
-   The sQuare Value is initialized to the Initial Q Value (0 or 1) and
-   is reflected in the Q bit of every outgoing packet.  The sQuare value
-   is inverted after sending every N packets (Q Period is 2*N).  The Q
-   bit represents "packet color" as defined by [RFC8321].
-
-   The choice of the Initial Q Value and Q Period is determined by the
-   protocol containing Q and L bits.  For example, the values can be
-   protocol constants (e.g.  "Initial Q Value" is 0, and "Q Period" is
-   128), or they can be set explicitly for each connection (e.g.
-   "Initial Q Value" is whatever value the initial packet has, and "Q
-   Period" is set per a dedicated TCP option on SYN and SYN/ACK), or
-   they can be included with every packet (e.g.  ConEx IPv6 Destination
-   Option of [ConEx-IPv6]).
-
-   Observation points can estimate the upstream losses by counting the
-   number of packets during a half period of the square signal, as
-   described in Section 4.
-
-3.1.1.  Q Period Selection
-
-   A protocol containing Q and L bits can allow the sender to choose Q
-   Period based on the expected amount of loss and reordering on the
-   path (see Section 4.2).  If the explicit value of the Q Period is not
-   explicitly signaled by the protocol, the Q Period value MUST be at
-   least 128 and be a power of 2.  This requirement allows an Observer
-   to infer the Q Period by observing one period of the square signal.
-   It also allows the Observer to identify flows that set the loss bits
-   to arbitrary values (see Section 6).
-
-3.2.  Setting the Loss Event Bit on Outgoing Packets
-
-   The Unreported Loss counter is initialized to 0, and L bit of every
-   outgoing packet indicates whether the Unreported Loss counter is
-   positive (L=1 if the counter is positive, and L=0 otherwise).  The
-   value of the Unreported Loss counter is decremented every time a
-   packet with L=1 is sent.
-
-   The value of the Unreported Loss counter is incremented for every
-   packet that the protocol declares lost, using whatever loss detection
-   machinery the protocol employs.  If the protocol is able to rescind
-   the loss determination later, a positive Unreported Loss counter MAY
-   be decremented due to the rescission, but it SHOULD NOT become
-   negative.
-
-   This loss signaling is similar to loss signaling in [ConEx], except
-   the Loss Event bit is reporting the exact number of lost packets,
-
-
-
-Ferrieux, et al.        Expires 21 September 2020               [Page 4]
-
-Internet-Draft                  loss-bits                     March 2020
-
-
-   whereas Echo Loss bit in [ConEx] is reporting an approximate number
-   of lost bytes.
-
-   For protocols, such as TCP ([TCP]), that allow network devices to
-   change data segmentation, it is possible that only a part of the
-   packet is lost.  In these cases, the sender MUST increment Unreported
-   Loss counter by the fraction of the packet data lost (so Unreported
-   Loss counter may become negative when a packet with L=1 is sent after
-   a partial packet has been lost).
-
-   Observation points can estimate the end-to-end loss, as determined by
-   the upstream endpoint's loss detection machinery, by counting packets
-   in this direction with a L bit equal to 1, as described in Section 4.
-
-4.  Using the Loss Bits for Passive Loss Measurement
-
-   There are three sources of observable loss:
+   There are three sources of loss that network operators need to
+   observe to guarantee high QoS:
 
    *  _upstream loss_ - loss between the sender and the observation
       point (Section 4.2)
@@ -256,88 +156,219 @@ Internet-Draft                  loss-bits                     March 2020
    The upstream and downstream loss together constitute _end-to-end
    loss_ (Section 4.1).
 
-   The Q and L bits allow detection and measurement of the types of loss
-   listed above.
+
+
+
+
+
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021                [Page 3]
+
+Internet-Draft                  loss-bits                      July 2020
+
+
+1.3.  On-Path Loss Signaling
+
+   Following the recommendation in [RFC8558] of making path signals
+   explicit, this document proposes adding two explicit loss bits to the
+   clear portion of the protocol headers to restore network operators'
+   ability to maintain high QoS.  These bits can be added to an
+   unencrypted portion of a header belonging to any protocol layer, e.g.
+   IP (see [IP]) and IPv6 (see [IPv6]) headers or extensions, such as
+   [IPv6AltMark], UDP surplus space (see [UDP-OPTIONS] and
+   [UDP-SURPLUS]), reserved bits in a QUIC v1 header (see
+   [QUIC-TRANSPORT]).
+
+1.4.  Recommended Use of the Signals
+
+   The loss signal is not designed for use in automated control of the
+   network in environments where loss bits are set by untrusted hosts,
+   Instead, the signal is to be used for troubleshooting individual
+   flows as well as for monitoring the network by aggregating
+   information from multiple flows and raising operator alarms if
+   aggregate statistics indicate a potential problem.
+
+2.  Notational Conventions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC2119].
+
+3.  Loss Bits
+
+   The draft introduces two bits that are to be present in packets
+   capable of loss reporting.  These are packets that include protocol
+   headers with the loss bits.  Only loss of packets capable of loss
+   reporting is reported using loss bits.
+
+   Whenever this specification refers to packets, it is referring only
+   to packets capable of loss reporting.
+
+   *  Q: The "sQuare signal" bit is toggled every N outgoing packets as
+      explained below in Section 3.1.
+
+   *  L: The "Loss event" bit is set to 0 or 1 according to the
+      Unreported Loss counter, as explained below in Section 3.2.
+
+   Each endpoint maintains appropriate counters independently and
+   separately for each separately identifiable flow (each subflow for
+   multipath connections).
+
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021                [Page 4]
+
+Internet-Draft                  loss-bits                      July 2020
+
+
+3.1.  Setting the sQuare Bit on Outgoing Packets
+
+   The sQuare Value is initialized to the Initial Q Value (0) and is
+   reflected in the Q bit of every outgoing packet.  The sQuare value is
+   inverted after sending every N packets (a Q Run).  Hence, Q Period is
+   2*N.  The Q bit represents "packet color" as defined by [RFC8321].
+   The sQuare Bit can also be called an Alernate Marking bit.
+
+   Observation points can estimate the upstream losses by counting the
+   number of packets during a half period of the square signal, as
+   described in Section 4.
+
+3.1.1.  Q Run Length Selection
+
+   The sender is expected to choose N (Q run length) based on the
+   expected amount of loss and reordering on the path.  The choice of N
+   strikes a compromise - the observation could become too unreliable in
+   case of packet reordering and/or severe loss if N is too small, while
+   short flows may not yield a useful upstream loss measurement if N is
+   too large (see Section 4.2).
+
+   The value of N MUST be at least 64 and be a power of 2.  This
+   requirement allows an Observer to infer the Q run length by observing
+   one period of the square signal.  It also allows the Observer to
+   identify flows that set the loss bits to arbitrary values (see
+   Section 6).
+
+   If the sender does not have sufficient information to make an
+   informed decision about Q run length, the sender SHOULD use N=64,
+   since this value has been extensively tried in large-scale field
+   tests and yielded good results.  Alternatively, the sender MAY also
+   choose a random N for each flow, increasing the chances of using a Q
+   run length that gives the best signal for some flows.
+
+   The sender MUST keep the value of N constant for a given flow.
+
+3.2.  Setting the Loss Event Bit on Outgoing Packets
+
+   The Unreported Loss counter is initialized to 0, and L bit of every
+   outgoing packet indicates whether the Unreported Loss counter is
+   positive (L=1 if the counter is positive, and L=0 otherwise).  The
+   value of the Unreported Loss counter is decremented every time a
+   packet with L=1 is sent.
+
+
+
+
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021                [Page 5]
+
+Internet-Draft                  loss-bits                      July 2020
+
+
+   The value of the Unreported Loss counter is incremented for every
+   packet that the protocol declares lost, using whatever loss detection
+   machinery the protocol employs.  If the protocol is able to rescind
+   the loss determination later, a positive Unreported Loss counter MAY
+   be decremented due to the rescission, but it SHOULD NOT become
+   negative due to the rescission.
+
+   This loss signaling is similar to loss signaling in [ConEx], except
+   the Loss Event bit is reporting the exact number of lost packets,
+   whereas Echo Loss bit in [ConEx] is reporting an approximate number
+   of lost bytes.
+
+   For protocols, such as TCP ([TCP]), that allow network devices to
+   change data segmentation, it is possible that only a part of the
+   packet is lost.  In these cases, the sender MUST increment Unreported
+   Loss counter by the fraction of the packet data lost (so Unreported
+   Loss counter may become negative when a packet with L=1 is sent after
+   a partial packet has been lost).
+
+   Observation points can estimate the end-to-end loss, as determined by
+   the upstream endpoint, by counting packets in this direction with the
+   L bit equal to 1, as described in Section 4.
+
+4.  Using the Loss Bits for Passive Loss Measurement
 
 4.1.  End-To-End Loss
 
    The Loss Event bit allows an observer to calculate the end-to-end
    loss rate by counting packets with L bit value of 0 and 1 for a given
-   connection.  The end-to-end loss rate is the fraction of packets with
-   L=1.
+   flow.  The end-to-end loss rate is the fraction of packets with L=1.
 
-   The simplifying assumption here is that upstream loss affects packets
-   with L=0 and L=1 equally.  This may be a simplification, if some loss
-   is caused by tail-drop in a network device.  If the sender congestion
+   The assumption here is that upstream loss affects packets with L=0
+   and L=1 equally.  If some loss is caused by tail-drop in a network
+   device, this may be a simplification.  If the sender's congestion
    controller reduces the packet send rate after loss, there may be a
    sufficient delay before sending packets with L=1 that they have a
    greater chance of arriving at the observer.
 
-
-
-
-
-Ferrieux, et al.        Expires 21 September 2020               [Page 5]
-
-Internet-Draft                  loss-bits                     March 2020
-
-
 4.2.  Upstream Loss
 
-   Blocks of N (half of Q Period) consecutive packets are sent with the
-   same value of the Q bit, followed by another block of N packets with
+   Blocks of N (Q Run length) consecutive packets are sent with the same
+   value of the Q bit, followed by another block of N packets with an
    inverted value of the Q bit.  Hence, knowing the value of N, an on-
    path observer can estimate the amount of upstream loss after
-   observing at least N packets.  If "p" is the average number of
-   packets in a block of packets with the same Q value, then the
-   upstream loss is "1-p/N".
+   observing at least N packets.  The upstream loss rate ("u") is one
+   minus the average number of packets in a block of packets with the
+   same Q value ("p") divided by N ("u=1-avg(p)/N").
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021                [Page 6]
+
+Internet-Draft                  loss-bits                      July 2020
+
 
    The observer needs to be able to tolerate packet reordering that can
    blur the edges of the square signal.
 
-   The Q Period needs to be chosen carefully, since the observation
-   could become too unreliable in case of packet reordering and loss if
-   Q Period is too small.  However, when Q Period is too large,
-   connections that send fewer than half Q Period packets do not yield a
-   useful upstream loss measurement.
-
    The observer needs to differentiate packets as belonging to different
-   connections, since they use independent counters.
+   flows, since they use independent counters.
 
 4.3.  Correlating End-to-End and Upstream Loss
 
-   Upstream loss is calculated by observing the actual packets that did
-   not suffer the upstream loss.  End-to-end loss, however, is
-   calculated by observing subsequent packets after the sender's
-   protocol detected the loss.  Hence, end-to-end loss is generally
-   observed with a delay of between 1 RTT (loss declared due to multiple
-   duplicate acknowledgments) and 1 RTO (loss declared due to a timeout)
-   relative to the upstream loss.
+   Upstream loss is calculated by observing packets that did not suffer
+   the upstream loss.  End-to-end loss, however, is calculated by
+   observing subsequent packets after the sender's protocol detected the
+   loss.  Hence, end-to-end loss is generally observed with a delay of
+   between 1 RTT (loss declared due to multiple duplicate
+   acknowledgments) and 1 RTO (loss declared due to a timeout) relative
+   to the upstream loss.
 
-   The connection RTT can sometimes be estimated by timing protocol
-   handshake messages.  This RTT estimate can be greatly improved by
-   observing a dedicated protocol mechanism for conveying RTT
-   information, such as the Latency Spin bit of [QUIC-TRANSPORT].
+   The flow RTT can sometimes be estimated by timing protocol handshake
+   messages.  This RTT estimate can be greatly improved by observing a
+   dedicated protocol mechanism for conveying RTT information, such as
+   the Latency Spin bit of [QUIC-TRANSPORT].
 
    Whenever the observer needs to perform a computation that uses both
    upstream and end-to-end loss rate measurements, it SHOULD use
    upstream loss rate leading the end-to-end loss rate by approximately
-   1 RTT.  If the observer is unable to estimate RTT of the connection,
-   it should accumulate loss measurements over time periods of at least
-   4 times the typical RTT for the observed connections.
+   1 RTT.  If the observer is unable to estimate RTT of the flow, it
+   should accumulate loss measurements over time periods of at least 4
+   times the typical RTT for the observed flows.
 
    If the calculated upstream loss rate exceeds the end-to-end loss rate
    calculated in Section 4.1, then either the Q Period is too short for
    the amount of packet reordering or there is observer loss, described
-
-
-
-
-Ferrieux, et al.        Expires 21 September 2020               [Page 6]
-
-Internet-Draft                  loss-bits                     March 2020
-
-
    in Section 4.5.  If this happens, the observer SHOULD adjust the
    calculated upstream loss rate to match end-to-end loss rate.
 
@@ -356,6 +387,13 @@ Internet-Draft                  loss-bits                     March 2020
    packets.  The observer loss is the loss that occurs on the mirror
    path.
 
+
+
+Ferrieux, et al.         Expires 29 January 2021                [Page 7]
+
+Internet-Draft                  loss-bits                      July 2020
+
+
    Observer loss affects upstream loss rate measurement since it causes
    the observer to account for fewer packets in a block of identical Q
    bit values (see {{upstreamloss)}).  The end-to-end loss rate
@@ -368,7 +406,10 @@ Internet-Draft                  loss-bits                     March 2020
    loss rate as described in Section 4.3 is a strong indication of the
    observer loss, whose magnitude is between the amount of such
    adjustment and the entirety of the upstream loss measured in
-   Section 4.2.
+   Section 4.2.  Alternatively, a high apparent upstream loss rate could
+   be an indication of significant reordering, possibly due to packets
+   belonging to a single flow being multiplexed over several upstream
+   paths with different latency characteristics.
 
 5.  ECN-Echo Event Bit
 
@@ -386,14 +427,6 @@ Internet-Draft                  loss-bits                     March 2020
    *  E: The "ECN-Echo Event" bit is set to 0 or 1 according to the
       Unreported ECN Echo counter, as explained below in Section 5.1.
 
-
-
-
-Ferrieux, et al.        Expires 21 September 2020               [Page 7]
-
-Internet-Draft                  loss-bits                     March 2020
-
-
 5.1.  Setting the ECN-Echo Event Bit on Outgoing Packets
 
    The Unreported ECN-Echo counter operates identicaly to Unreported
@@ -406,6 +439,16 @@ Internet-Draft                  loss-bits                     March 2020
    CE marks.  For protocols like TCP, the method described in
    [ConEx-TCP] can be employed.  As stated in [ConEx-TCP], such feedback
    can be further improved using a method described in [ACCURATE].
+
+
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021                [Page 8]
+
+Internet-Draft                  loss-bits                      July 2020
+
 
 5.2.  Using E Bit for Passive ECN-Reported Congestion Measurement
 
@@ -425,54 +468,78 @@ Internet-Draft                  loss-bits                     March 2020
 6.  Protocol Ossification Considerations
 
    Accurate loss information is not critical to the operation of any
-   protocol, though its presence for a sufficient number of connections
-   is important for the operation of the networks.
+   protocol, though its presence for a sufficient number of flows is
+   important for the operation of networks.
 
-   The loss bits are amenable to "greasing" described in [GREASE], if
+   The loss bits are amenable to "greasing" described in [RFC8701], if
    the protocol designers are not ready to dedicate (and ossify) bits
    used for loss reporting to this function.  The greasing could be
    accomplished similarly to the Latency Spin bit greasing in
    [QUIC-TRANSPORT].  Namely, implementations could decide that a
-   fraction of connections should not encode loss information in the
-   loss bits and, instead, the bits would be set to arbitrary values.
-   The observers would need to be ready to ignore connections with loss
+   fraction of flows should not encode loss information in the loss bits
+   and, instead, the bits would be set to arbitrary values.  The
+   observers would need to be ready to ignore flows with loss
    information more resembling noise than the expected signal.
-
-
-
-
-
-
-
-
-Ferrieux, et al.        Expires 21 September 2020               [Page 8]
-
-Internet-Draft                  loss-bits                     March 2020
-
 
 7.  Security Considerations
 
    Passive loss observation has been a part of the network operations
    for a long time, so exposing loss information to the network does not
-   add new security concerns.
+   add new security concerns for protocols that are currently
+   observable.
+
+   In the absence of upstream packet loss, the Q bit signal does not
+   provide any information that cannot be observed by simply counting
+   packets transiting a network path.  In the presence of upstream
+   packet loss, the Q bit will disclose the loss, but this is
+   information about the environment and not the endpoint state.  The L
+   bit signal discloses internal state of the protocol's loss detection
+   machinery, but this state can often be gleamed by timing packets and
+   observing congestion controller response.  Hence, loss bits do not
+   provide a viable new mechanism to attack data integrity and secrecy.
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021                [Page 9]
+
+Internet-Draft                  loss-bits                      July 2020
+
+
+7.1.  Optimistic ACK Attack
+
+   A defense against an Optimistic ACK Attack, decribed in
+   [QUIC-TRANSPORT], involves a sender randomly skipping packet numbers
+   to detect a receiver acknowledging packet numbers that have never
+   been received.  The Q bit signal may inform the attacker which packet
+   numbers were skipped on purpose and which had been actually lost (and
+   are, therefore, safe for the attacker to acknowledge).  To use the Q
+   bit for this purpose, the attacker must first receive at least an
+   entire Q Run of packets, which renders the attack ineffective against
+   a delay-sensitive congestion controller.
+
+   A protocol that is more susceptible to an Optimistic ACK Attack with
+   the loss signal provided by Q bit and uses a loss-based congestion
+   controller, SHOULD shorten the current Q Run by the number of skipped
+   packets numbers.  For example, skipping a single packet number will
+   invert the sQuare signal one outgoing packet sooner.
 
 8.  Privacy Considerations
 
-   Guarding user's privacy is an important goal for modern protocols and
-   protocol extensions per [RFC7258].  While an explicit loss signal - a
-   preferred way to share loss information per [RFC8558] - helps to
-   minimize unintentional exposure of additional information,
-   implementations of loss reporting must ensure that loss information
-   does not compromise protocol's privacy goals.
+   To minimize unintentional exposure of information, loss bits provide
+   an explicit loss signal - a preferred way to share information per
+   [RFC8558].
 
-   For example, [QUIC-TRANSPORT] allows changing Connection IDs in the
-   middle of a connection to reduce the likelihood of a passive observer
-   linking old and new subflows to the same device.  A QUIC
-   implementation would need to reset all counters when it changes the
-   destination (IP address or UDP port) or the Connection ID used for
-   outgoing packets.  It would also need to avoid incrementing
-   Unreported Loss counter for loss of packets sent to a different
-   destination or with a different Connection ID.
+   New protocols commonly have specific privacy goals, and loss
+   reporting must ensure that loss information does not compromise those
+   privacy goals.  For example, [QUIC-TRANSPORT] allows changing
+   Connection IDs in the middle of a connection to reduce the likelihood
+   of a passive observer linking old and new subflows to the same
+   device.  A QUIC implementation would need to reset all counters when
+   it changes the destination (IP address or UDP port) or the Connection
+   ID used for outgoing packets.  It would also need to avoid
+   incrementing Unreported Loss counter for loss of packets sent to a
+   different destination or with a different Connection ID.
 
 9.  IANA Considerations
 
@@ -480,7 +547,22 @@ Internet-Draft                  loss-bits                     March 2020
 
 10.  Change Log
 
-10.1.  Since version 01
+10.1.  Since version 02
+
+   *  Minor improvement and clarifications
+
+
+
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021               [Page 10]
+
+Internet-Draft                  loss-bits                      July 2020
+
+
+10.2.  Since version 01
 
    *  Clarified Q Period selection
 
@@ -489,22 +571,11 @@ Internet-Draft                  loss-bits                     March 2020
    *  Clarified L bit calculation for protocols that allow partial data
       loss due to a change in segmentation (such as TCP)
 
-10.2.  Since version 00
+10.3.  Since version 00
 
    *  Addressed review comments
 
    *  Improved guidelines for privacy protections for QIUC
-
-
-
-
-
-
-
-Ferrieux, et al.        Expires 21 September 2020               [Page 9]
-
-Internet-Draft                  loss-bits                     March 2020
-
 
 11.  Acknowledgments
 
@@ -521,12 +592,6 @@ Internet-Draft                  loss-bits                     March 2020
               DOI 10.17487/RFC7713, December 2015,
               <https://www.rfc-editor.org/info/rfc7713>.
 
-   [ConEx-IPv6]
-              Krishnan, S., Kuehlewind, M., Briscoe, B., and C. Ralli,
-              "IPv6 Destination Option for Congestion Exposure (ConEx)",
-              RFC 7837, DOI 10.17487/RFC7837, May 2016,
-              <https://www.rfc-editor.org/info/rfc7837>.
-
    [ConEx-TCP]
               Kuehlewind, M., Ed. and R. Scheffenegger, "TCP
               Modifications for Congestion Exposure (ConEx)", RFC 7786,
@@ -542,6 +607,17 @@ Internet-Draft                  loss-bits                     March 2020
               DOI 10.17487/RFC0791, September 1981,
               <https://www.rfc-editor.org/info/rfc791>.
 
+
+
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021               [Page 11]
+
+Internet-Draft                  loss-bits                      July 2020
+
+
    [IPv6]     Deering, S. and R. Hinden, "Internet Protocol, Version 6
               (IPv6) Specification", STD 86, RFC 8200,
               DOI 10.17487/RFC8200, July 2017,
@@ -554,14 +630,6 @@ Internet-Draft                  loss-bits                     March 2020
 
    [RFC8321]  Fioccola, G., Ed., Capello, A., Cociglio, M., Castaldelli,
               L., Chen, M., Zheng, L., Mirsky, G., and T. Mizrahi,
-
-
-
-Ferrieux, et al.        Expires 21 September 2020              [Page 10]
-
-Internet-Draft                  loss-bits                     March 2020
-
-
               "Alternate-Marking Method for Passive and Hybrid
               Performance Monitoring", RFC 8321, DOI 10.17487/RFC8321,
               January 2018, <https://www.rfc-editor.org/info/rfc8321>.
@@ -582,21 +650,29 @@ Internet-Draft                  loss-bits                     March 2020
               <http://www.ietf.org/internet-drafts/draft-ietf-tcpm-
               accurate-ecn-11.txt>.
 
-   [GREASE]   Benjamin, D., "Applying GREASE to TLS Extensibility", Work
-              in Progress, Internet-Draft, draft-ietf-tls-grease-04, 22
-              August 2019, <http://www.ietf.org/internet-drafts/draft-
-              ietf-tls-grease-04.txt>.
+   [IPv6AltMark]
+              Fioccola, G., Zhou, T., Cociglio, M., Qin, F., and R.
+              Pang, "IPv6 Application of the Alternate Marking Method",
+              Work in Progress, Internet-Draft, draft-ietf-6man-ipv6-
+              alt-mark-01, 22 June 2020, <http://www.ietf.org/internet-
+              drafts/draft-ietf-6man-ipv6-alt-mark-01.txt>.
 
    [QUIC-TRANSPORT]
               Iyengar, J. and M. Thomson, "QUIC: A UDP-Based Multiplexed
               and Secure Transport", Work in Progress, Internet-Draft,
-              draft-ietf-quic-transport-27, 21 February 2020,
+              draft-ietf-quic-transport-29, 9 June 2020,
               <http://www.ietf.org/internet-drafts/draft-ietf-quic-
-              transport-27.txt>.
+              transport-29.txt>.
 
-   [RFC7258]  Farrell, S. and H. Tschofenig, "Pervasive Monitoring Is an
-              Attack", BCP 188, RFC 7258, DOI 10.17487/RFC7258, May
-              2014, <https://www.rfc-editor.org/info/rfc7258>.
+
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021               [Page 12]
+
+Internet-Draft                  loss-bits                      July 2020
+
 
    [RFC8517]  Dolson, D., Ed., Snellman, J., Boucadair, M., Ed., and C.
               Jacquenet, "An Inventory of Transport-Centric Functions
@@ -604,22 +680,18 @@ Internet-Draft                  loss-bits                     March 2020
               RFC 8517, DOI 10.17487/RFC8517, February 2019,
               <https://www.rfc-editor.org/info/rfc8517>.
 
+   [RFC8701]  Benjamin, D., "Applying Generate Random Extensions And
+              Sustain Extensibility (GREASE) to TLS Extensibility",
+              RFC 8701, DOI 10.17487/RFC8701, January 2020,
+              <https://www.rfc-editor.org/info/rfc8701>.
+
    [TRANSPORT-ENCRYPT]
               Fairhurst, G. and C. Perkins, "Considerations around
               Transport Header Confidentiality, Network Operations, and
               the Evolution of Internet Transport Protocols", Work in
               Progress, Internet-Draft, draft-ietf-tsvwg-transport-
-              encrypt-12, 27 February 2020, <http://www.ietf.org/
-
-
-
-Ferrieux, et al.        Expires 21 September 2020              [Page 11]
-
-Internet-Draft                  loss-bits                     March 2020
-
-
-              internet-drafts/draft-ietf-tsvwg-transport-encrypt-
-              12.txt>.
+              encrypt-16, 13 July 2020, <http://www.ietf.org/internet-
+              drafts/draft-ietf-tsvwg-transport-encrypt-16.txt>.
 
    [UDP-OPTIONS]
               Touch, J., "Transport Options for UDP", Work in Progress,
@@ -650,6 +722,14 @@ Authors' Addresses
    Igor Lubashev
    Akamai Technologies
    150 Broadway
+
+
+
+Ferrieux, et al.         Expires 29 January 2021               [Page 13]
+
+Internet-Draft                  loss-bits                      July 2020
+
+
    Cambridge, MA 1122
    United States of America
 
@@ -669,4 +749,36 @@ Authors' Addresses
 
 
 
-Ferrieux, et al.        Expires 21 September 2020              [Page 12]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ferrieux, et al.         Expires 29 January 2021               [Page 14]
