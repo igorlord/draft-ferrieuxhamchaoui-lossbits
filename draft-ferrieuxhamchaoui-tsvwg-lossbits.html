@@ -8,6 +8,7 @@
 <meta content="Alexandre Ferrieux" name="author">
 <meta content="Isabelle Hamchaoui" name="author">
 <meta content="Igor Lubashev" name="author">
+<meta content="Dmitri Tikhonov" name="author">
 <meta content="
        This document describes a protocol-independent method that employs two bits to
 allow endpoints to signal packet loss in a way that can be used by network
@@ -844,16 +845,24 @@ table.left {
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
-      <div class="author-name">A. Ferrieux</div>
+      <div class="author-name">A. Ferrieux, <span class="editor">Ed.</span>
+</div>
 <div class="org">Orange Labs</div>
 </div>
 <div class="author">
-      <div class="author-name">I. Hamchaoui</div>
+      <div class="author-name">I. Hamchaoui, <span class="editor">Ed.</span>
+</div>
 <div class="org">Orange Labs</div>
 </div>
 <div class="author">
-      <div class="author-name">I. Lubashev</div>
+      <div class="author-name">I. Lubashev, <span class="editor">Ed.</span>
+</div>
 <div class="org">Akamai Technologies</div>
+</div>
+<div class="author">
+      <div class="author-name">D. Tikhonov, <span class="editor">Ed.</span>
+</div>
+<div class="org">LiteSpeed Technologies</div>
 </div>
 </dd>
 </dl>
@@ -915,120 +924,120 @@ transport header and do not allow an alternative method for loss detection.<a hr
         <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
 <a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
         </h2>
-<nav class="toc"><ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.1">
+<nav class="toc"><ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1"><a href="#section-1" class="xref">1</a>.  <a href="#name-introduction" class="xref">Introduction</a><a href="#section-toc.1-1.1.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.1.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="xref">1.1</a>.  <a href="#name-motivation-for-passive-on-p" class="xref">Motivation for Passive On-Path Loss Observation</a><a href="#section-toc.1-1.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.1.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.1.2.2">
                 <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="xref">1.2</a>.  <a href="#name-on-path-loss-observation" class="xref">On-Path Loss Observation</a><a href="#section-toc.1-1.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.1.2.3">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.1.2.3">
                 <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="xref">1.3</a>.  <a href="#name-on-path-loss-signaling" class="xref">On-Path Loss Signaling</a><a href="#section-toc.1-1.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.1.2.4">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.1.2.4">
                 <p id="section-toc.1-1.1.2.4.1"><a href="#section-1.4" class="xref">1.4</a>.  <a href="#name-recommended-use-of-the-sign" class="xref">Recommended Use of the Signals</a><a href="#section-toc.1-1.1.2.4.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.2">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.2">
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-notational-conventions" class="xref">Notational Conventions</a><a href="#section-toc.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.3">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="xref">3</a>.  <a href="#name-loss-bits" class="xref">Loss Bits</a><a href="#section-toc.1-1.3.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.3.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-setting-the-square-bit-on-o" class="xref">Setting the sQuare Bit on Outgoing Packets</a><a href="#section-toc.1-1.3.2.1.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.3.2.1.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.3.2.1.2.1">
                     <p id="section-toc.1-1.3.2.1.2.1.1"><a href="#section-3.1.1" class="xref">3.1.1</a>.  <a href="#name-q-run-length-selection" class="xref">Q Run Length Selection</a><a href="#section-toc.1-1.3.2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 </ul>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.3.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-setting-the-loss-event-bit-" class="xref">Setting the Loss Event Bit on Outgoing Packets</a><a href="#section-toc.1-1.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.4">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-using-the-loss-bits-for-pas" class="xref">Using the Loss Bits for Passive Loss Measurement</a><a href="#section-toc.1-1.4.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.4.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.4.2.1">
                 <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="xref">4.1</a>.  <a href="#name-end-to-end-loss" class="xref">End-To-End Loss</a><a href="#section-toc.1-1.4.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.4.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.4.2.2">
                 <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="xref">4.2</a>.  <a href="#name-upstream-loss" class="xref">Upstream Loss</a><a href="#section-toc.1-1.4.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.4.2.3">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.4.2.3">
                 <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="xref">4.3</a>.  <a href="#name-correlating-end-to-end-and-" class="xref">Correlating End-to-End and Upstream Loss</a><a href="#section-toc.1-1.4.2.3.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.4.2.4">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.4.2.4">
                 <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="xref">4.4</a>.  <a href="#name-downstream-loss" class="xref">Downstream Loss</a><a href="#section-toc.1-1.4.2.4.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.4.2.5">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.4.2.5">
                 <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="xref">4.5</a>.  <a href="#name-observer-loss" class="xref">Observer Loss</a><a href="#section-toc.1-1.4.2.5.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.5">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-ecn-echo-event-bit" class="xref">ECN-Echo Event Bit</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.5.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.5.2.1">
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-setting-the-ecn-echo-event-" class="xref">Setting the ECN-Echo Event Bit on Outgoing Packets</a><a href="#section-toc.1-1.5.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.5.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.5.2.2">
                 <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-using-e-bit-for-passive-ecn" class="xref">Using E Bit for Passive ECN-Reported Congestion Measurement</a><a href="#section-toc.1-1.5.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.6">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-protocol-ossification-consi" class="xref">Protocol Ossification Considerations</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.7">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.7">
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="xref">7</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a><a href="#section-toc.1-1.7.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.7.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.7.2.1">
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="xref">7.1</a>.  <a href="#name-optimistic-ack-attack" class="xref">Optimistic ACK Attack</a><a href="#section-toc.1-1.7.2.1.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.8">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.8">
             <p id="section-toc.1-1.8.1"><a href="#section-8" class="xref">8</a>.  <a href="#name-privacy-considerations" class="xref">Privacy Considerations</a><a href="#section-toc.1-1.8.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.9">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.9">
             <p id="section-toc.1-1.9.1"><a href="#section-9" class="xref">9</a>.  <a href="#name-iana-considerations" class="xref">IANA Considerations</a><a href="#section-toc.1-1.9.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.10">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.10">
             <p id="section-toc.1-1.10.1"><a href="#section-10" class="xref">10</a>. <a href="#name-change-log" class="xref">Change Log</a><a href="#section-toc.1-1.10.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.10.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.10.2.1">
                 <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="xref">10.1</a>.  <a href="#name-since-version-02" class="xref">Since version 02</a><a href="#section-toc.1-1.10.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.10.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.10.2.2">
                 <p id="section-toc.1-1.10.2.2.1"><a href="#section-10.2" class="xref">10.2</a>.  <a href="#name-since-version-01" class="xref">Since version 01</a><a href="#section-toc.1-1.10.2.2.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.10.2.3">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.10.2.3">
                 <p id="section-toc.1-1.10.2.3.1"><a href="#section-10.3" class="xref">10.3</a>.  <a href="#name-since-version-00" class="xref">Since version 00</a><a href="#section-toc.1-1.10.2.3.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.11">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.11">
             <p id="section-toc.1-1.11.1"><a href="#section-11" class="xref">11</a>. <a href="#name-acknowledgments" class="xref">Acknowledgments</a><a href="#section-toc.1-1.11.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.12">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.12">
             <p id="section-toc.1-1.12.1"><a href="#section-12" class="xref">12</a>. <a href="#name-references" class="xref">References</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
-<ul class="toc compact ulEmpty">
-<li class="toc compact ulEmpty" id="section-toc.1-1.12.2.1">
+<ul class="compact toc ulEmpty">
+<li class="compact toc ulEmpty" id="section-toc.1-1.12.2.1">
                 <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="xref">12.1</a>.  <a href="#name-normative-references" class="xref">Normative References</a><a href="#section-toc.1-1.12.2.1.1" class="pilcrow">¶</a></p>
 </li>
-              <li class="toc compact ulEmpty" id="section-toc.1-1.12.2.2">
+              <li class="compact toc ulEmpty" id="section-toc.1-1.12.2.2">
                 <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="xref">12.2</a>.  <a href="#name-informative-references" class="xref">Informative References</a><a href="#section-toc.1-1.12.2.2.1" class="pilcrow">¶</a></p>
 </li>
             </ul>
 </li>
-          <li class="toc compact ulEmpty" id="section-toc.1-1.13">
+          <li class="compact toc ulEmpty" id="section-toc.1-1.13">
             <p id="section-toc.1-1.13.1"><a href="#section-appendix.a" class="xref"></a><a href="#name-authors-addresses" class="xref">Authors' Addresses</a><a href="#section-toc.1-1.13.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
@@ -1597,7 +1606,7 @@ loss measurement and is an instance of the "alternate marking" as defined in
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Alexandre Ferrieux</span></div>
+        <div dir="auto" class="left"><span class="fn nameRole">Alexandre Ferrieux (<span class="role">editor</span>)</span></div>
 <div dir="auto" class="left"><span class="org">Orange Labs</span></div>
 <div class="email">
 <span>Email:</span>
@@ -1605,7 +1614,7 @@ loss measurement and is an instance of the "alternate marking" as defined in
 </div>
 </address>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Isabelle Hamchaoui</span></div>
+        <div dir="auto" class="left"><span class="fn nameRole">Isabelle Hamchaoui (<span class="role">editor</span>)</span></div>
 <div dir="auto" class="left"><span class="org">Orange Labs</span></div>
 <div class="email">
 <span>Email:</span>
@@ -1613,16 +1622,19 @@ loss measurement and is an instance of the "alternate marking" as defined in
 </div>
 </address>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Igor Lubashev</span></div>
+        <div dir="auto" class="left"><span class="fn nameRole">Igor Lubashev (<span class="role">editor</span>)</span></div>
 <div dir="auto" class="left"><span class="org">Akamai Technologies</span></div>
-<div dir="auto" class="left"><span class="street-address">150 Broadway</span></div>
-<div dir="auto" class="left">
-<span class="locality">Cambridge</span>, <span class="region">MA</span> <span class="postal-code">1122</span>
-</div>
-<div dir="auto" class="left"><span class="country-name">United States of America</span></div>
 <div class="email">
 <span>Email:</span>
 <a href="mailto:ilubashe@akamai.com" class="email">ilubashe@akamai.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Dmitri Tikhonov (<span class="role">editor</span>)</span></div>
+<div dir="auto" class="left"><span class="org">LiteSpeed Technologies</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:dtikhonov@litespeedtech.com" class="email">dtikhonov@litespeedtech.com</a>
 </div>
 </address>
 </section>
